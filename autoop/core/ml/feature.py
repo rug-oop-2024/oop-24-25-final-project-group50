@@ -8,9 +8,8 @@ from autoop.core.ml.dataset import Dataset
 
 class Feature(BaseModel):
     """A description"""
-    def __init__(self, name, type):
-        self.name = name
-        self.type = type
+    name: str = Field(default="")
+    type: str = Field(default="")
 
     def __str__(self):
         raise NotImplementedError("To be implemented.")
