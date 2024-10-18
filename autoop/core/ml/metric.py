@@ -38,6 +38,12 @@ class Metric(ABC):
         np_observations = np.asarray(observations)
         predicted_ground_truths = np_observations @ model.parameters  # geen idee hoe ik de parameters moet callen
         return self.metric_function(predicted_ground_truths, ground_truths)
+    
+    def predictions_for_regression(observations, model_parameters):
+        pass
+
+    def predictions_for_classification(observations, model_parameters):
+        pass
 
     @abstractmethod
     def metric_function(predicted_truths, actual_truths) -> float:
