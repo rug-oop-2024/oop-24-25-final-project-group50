@@ -1,1 +1,3 @@
 artifact.py - What do they want with save()?
+feature.py - What do they want with __str__?
+tests - How to get them to run
