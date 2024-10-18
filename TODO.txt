@@ -1,3 +1,8 @@
 artifact.py - What do they want with save()?
 feature.py - What do they want with __str__?
 tests - How to get them to run
+
+ML/metric/extensions: allebei 1x classification metric en 1x regression metric
+ML/model: moeten we nog zien
+ML/model/extensions: Niek 1x classification + 1x regression. Daniël 1x classification
+ML/pipeline/evaluation: moeten we nog zien
