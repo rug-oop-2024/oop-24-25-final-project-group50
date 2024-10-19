@@ -85,3 +85,18 @@ class MeanSquaredError(Metric):
         subtracted_array = np.subtract(predicted_truth - actual_truth)
         total_result = np.sum(subtracted_array**2)
         return 1/len(total_result) * total_result
+
+
+class LogLoss(Metric):
+    """Class for the calculation of the logloss"""
+    def metric_function(predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
+        """
+        The code assumes that predicted_truths consists of an array with chances which are added up together 1
+        E.g. [0.1, 0.2, 0.6, 0.1]
+        The code assumes that actual_truths consists of an array with a 0 or 1, indicating the right classification.
+        E.g. [0, 0, 1, 0]
+        """
+        multiplied_arrays = np.multiply(predicted_truths, actual_truths)
+        filtered_array = multiplied_arrays[multiplied_arrays != 0]
+        log_list = -np.log(filtered_array)
+        return 1/len(log_list) * np.sum(log_list)
