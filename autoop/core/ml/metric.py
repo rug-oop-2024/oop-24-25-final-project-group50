@@ -18,6 +18,14 @@ def get_metric(name: str) -> Any:
             return MeanSquaredError()
         case "accuracy":
             return Accuracy()
+        case "log_loss":
+            return LogLoss()
+        case "mean_absolute_percentage_error":
+            return MeanAbsolutePercentageError()
+        case "cohens_kappa":
+            return CohensKappa()
+        case "r_squared_score":
+            return RSquaredScore()
     # Factory function to get a metric by name.
     # Return a metric instance given its str name.
 
@@ -27,7 +35,8 @@ class Metric(ABC):
     # your code here
     # remember: metrics take ground truth and prediction as input and return a real number
 
-    def __call__(self, model, observations, ground_truths) -> float:
+    def __call__(self, predicted_truths: np.ndarray,
+                 ground_truths: np.ndarray) -> float:
         """
         Sets up the data to be calculated in one of the metrics.
 
@@ -39,25 +48,23 @@ class Metric(ABC):
         Returns:
             a float with the calculation of the chosen metric.
         """
-        np_observations = np.asarray(observations)
-        predicted_ground_truths = np_observations @ model.parameters  # geen idee hoe ik de parameters moet callen
-        return self.metric_function(predicted_ground_truths, ground_truths)
+        return self.metric_function(predicted_truths, ground_truths)
 
-    def predictions_for_regression(observations, model_parameters):
-        pass
+    # def predictions_for_regression(observations, model_parameters):
+    #     pass
 
-    def predictions_for_classification(observations, model_parameters):
-        pass
+    # def predictions_for_classification(observations, model_parameters):
+    #     pass
 
     @abstractmethod
-    def metric_function(predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
+    def metric_function(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
         pass
 # add here concrete implementations of the Metric class
 
 
 class Accuracy(Metric):
     """Class for the calculation of accuracy"""
-    def metric_function(predicted_truth, actual_truth) -> float:
+    def metric_function(self, predicted_truth, actual_truth) -> float:
         """
         The metric function to calculate the accuracy.
 
@@ -69,12 +76,12 @@ class Accuracy(Metric):
             The percentage of matching predicted and actual truths
         """
         total_result = np.sum((predicted_truth == actual_truth).astype(int))
-        return 1/len(total_result) * total_result
+        return 1/len(actual_truth) * total_result
 
 
 class MeanSquaredError(Metric):
     """Class for the calculation of the mean squared error"""
-    def metric_function(predicted_truth, actual_truth) -> float:
+    def metric_function(self, predicted_truth, actual_truth) -> float:
         """
         The metric function to calculate the mean squared error.
 
@@ -86,14 +93,13 @@ class MeanSquaredError(Metric):
             The average error of the difference between all
             predicted and actual truths
         """
-        subtracted_array = np.subtract(predicted_truth - actual_truth)
-        total_result = np.sum(subtracted_array**2)
-        return 1/len(total_result) * total_result
+        total_result = np.sum((predicted_truth - actual_truth) ** 2)
+        return 1/len(actual_truth) * total_result
 
 
 class LogLoss(Metric):
     """Class for the calculation of the logloss"""
-    def metric_function(predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
+    def metric_function(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
         """
         The code assumes that predicted_truths consists of an array with chances which are added up together 1
         E.g. [0.1, 0.2, 0.6, 0.1]
@@ -108,7 +114,7 @@ class LogLoss(Metric):
 
 class MeanAbsolutePercentageError(Metric):
     """Class for the calculation of the mean absolute error percentage"""
-    def metric_function(predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
+    def metric_function(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
         """
         The code assumes that predicted_truths consists of an array with seperate results.
         E.g. [0.7, 1.8, 9.3, 7.0]
@@ -137,13 +143,13 @@ class CohensKappa(Metric):
         unique_labels = np.unique(actual_truth).astype(str)
         label_num = len(unique_labels)
 
-        index_mapping = {label: index for index, label in enumerate(unique_labels)}
+        index_map = {label: index for index, label in enumerate(unique_labels)}
 
         confusion_matrix = np.zeros((label_num, label_num), dtype=int)
 
         for truth, prediction in zip(actual_truth, predicted_truth):
-            confusion_matrix[index_mapping[truth],
-                             index_mapping[prediction]] += 1
+            confusion_matrix[index_map[truth],
+                             index_map[prediction]] += 1
 
         num_samples = np.sum(confusion_matrix)
         observed_agreement = np.trace(confusion_matrix) / num_samples
@@ -159,8 +165,9 @@ class CohensKappa(Metric):
 
 
 class RSquaredScore(Metric):
-    """Class for the calculation of the mean absolute error percentage"""
-    def metric_function(predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
+    """Class which computes the R^2 score."""
+    def metric_function(self, predicted_truths: np.ndarray,
+                        actual_truths: np.ndarray) -> float:
         """
         Metric function that calculates the R^2 score of a model.
 
