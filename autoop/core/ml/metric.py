@@ -113,16 +113,20 @@ class LogLoss(Metric):
 
 
 class MeanAbsolutePercentageError(Metric):
-    """Class for the calculation of the mean absolute error percentage"""
+    """Class for the calculation of the mean absolute percentage error"""
     def metric_function(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
         """
-        The code assumes that predicted_truths consists of an array with seperate results.
-        E.g. [0.7, 1.8, 9.3, 7.0]
-        The code assumes that actual_truths consists of an array with the corresponding true values.
-        E.g. [0.8, 1.7, 9.0, 7.5]
+        The metric function to calculate the mean absolute percentage error.
+
+        Args:
+            predicted_truth: the predicted truths made by the model
+            actual_truth: the ground truth given in the database
+        Returns:
+            The average degree to which the predicted value differs from the
+            actual value expressed in percentages
         """
-        sum_part = abs(actual_truths - predicted_truths) / actual_truths
-        return sum_part * 100 / len(predicted_truths)
+        sum_part = np.sum(abs(actual_truths - predicted_truths) / actual_truths)
+        return sum_part / len(predicted_truths) * 100
 
 
 class CohensKappa(Metric):
