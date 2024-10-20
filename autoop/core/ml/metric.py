@@ -8,7 +8,7 @@ METRICS = [
 ]  # add the names (in strings) of the metrics you implement
 
 
-def get_metric(name: str) -> 'Metric':
+def get_metric(name: str) -> Any:
     match name:
         case "mean_squared_error":
             return MeanSquaredError()
@@ -38,7 +38,7 @@ class Metric(ABC):
         np_observations = np.asarray(observations)
         predicted_ground_truths = np_observations @ model.parameters  # geen idee hoe ik de parameters moet callen
         return self.metric_function(predicted_ground_truths, ground_truths)
-    
+
     def predictions_for_regression(observations, model_parameters):
         pass
 
@@ -46,7 +46,7 @@ class Metric(ABC):
         pass
 
     @abstractmethod
-    def metric_function(predicted_truths, actual_truths) -> float:
+    def metric_function(predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
         pass
 # add here concrete implementations of the Metric class
 
@@ -100,3 +100,16 @@ class LogLoss(Metric):
         filtered_array = multiplied_arrays[multiplied_arrays != 0]
         log_list = -np.log(filtered_array)
         return 1/len(log_list) * np.sum(log_list)
+
+
+class MeanAbsolutePercentageError(Metric):
+    """Class for the calculation of the mean absolute error percentage"""
+    def metric_function(predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
+        """
+        The code assumes that predicted_truths consists of an array with seperate results.
+        E.g. [0.7, 1.8, 9.3, 7.0]
+        The code assumes that actual_truths consists of an array with the corresponding true values.
+        E.g. [0.8, 1.7, 9.0, 7.5]
+        """
+        sum_part = abs(actual_truths - predicted_truths) / actual_truths
+        return sum_part * 100 / len(predicted_truths)
