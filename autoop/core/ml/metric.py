@@ -5,6 +5,10 @@ import numpy as np
 METRICS = [
     "mean_squared_error",
     "accuracy",
+    "log_loss",
+    "mean_absolute_percentage_error",
+    "cohens_kappa",
+    "r_squared_score",
 ]  # add the names (in strings) of the metrics you implement
 
 
@@ -113,3 +117,65 @@ class MeanAbsolutePercentageError(Metric):
         """
         sum_part = abs(actual_truths - predicted_truths) / actual_truths
         return sum_part * 100 / len(predicted_truths)
+
+
+class CohensKappa(Metric):
+    """Class that computes Cohen's Kappa"""
+    def metric_function(self, predicted_truth: np.ndarray, actual_truth: np.ndarray) -> float:
+        """
+        The metric function to calculate Cohen's Kappa.
+
+        Args:
+            predicted_truth: the predicted truths made by the model
+            actual_truth: the ground truth given in the database
+
+        Returns:
+            The degree to which the model's predictions agree with the true
+            values. 
+            The closer to 1, the better.
+        """
+        unique_labels = np.unique(actual_truth).astype(str)
+        label_num = len(unique_labels)
+
+        index_mapping = {label: index for index, label in enumerate(unique_labels)}
+
+        confusion_matrix = np.zeros((label_num, label_num), dtype=int)
+
+        for truth, prediction in zip(actual_truth, predicted_truth):
+            confusion_matrix[index_mapping[truth],
+                             index_mapping[prediction]] += 1
+
+        num_samples = np.sum(confusion_matrix)
+        observed_agreement = np.trace(confusion_matrix) / num_samples
+
+        row_sum = np.sum(confusion_matrix, axis=1)
+        column_sum = np.sum(confusion_matrix, axis=0)
+        expected_agreement = np.sum((row_sum * column_sum) / num_samples**2)
+
+        return (
+            (observed_agreement - expected_agreement) /
+            (1 - expected_agreement)
+            )
+
+
+class RSquaredScore(Metric):
+    """Class for the calculation of the mean absolute error percentage"""
+    def metric_function(predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
+        """
+        Metric function that calculates the R^2 score of a model.
+
+        Args:
+            predicted_truth: the predicted truths made by the model
+            actual_truth: the ground truth given in the database
+
+        Returns:
+            How well the model fits the data.
+            The closer to 1, the better.
+        """
+
+        actual_truths_mean = np.mean(actual_truths)
+        total_sum_squares = np.sum((actual_truths - actual_truths_mean) ** 2)
+
+        residual_sum_squares = np.sum((actual_truths - predicted_truths) ** 2)
+
+        return 1 - (residual_sum_squares / total_sum_squares)
