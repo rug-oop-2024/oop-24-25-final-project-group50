@@ -64,7 +64,5 @@ class MultipleLinearRegression(Model):
         Returns:
             The prediction as a float
         """
-        prediction = 0
-        for i in range(len(observation)):
-            prediction += observation[i] * self._parameters["parameters"][i]
-        return prediction + self._parameters["parameters"][-1]
+        return sum(np.append(observation*self._parameters["parameters"][:-1],
+                             self._parameters["parameters"][-1]))
