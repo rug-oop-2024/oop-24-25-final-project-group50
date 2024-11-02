@@ -21,6 +21,7 @@ class ElasticNet(Model):
         """
         super().__init__()
         self._en = En()
+        self._type = "regression"
 
     def fit(self, observations: np.ndarray, ground_truth: np.ndarray) -> None:
         """
