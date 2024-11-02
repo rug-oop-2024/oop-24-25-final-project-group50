@@ -9,6 +9,7 @@ METRICS = [
     "mean_absolute_percentage_error",
     "cohens_kappa",
     "r_squared_score",
+    "precision"
 ]  # add the names (in strings) of the metrics you implement
 
 
@@ -26,6 +27,8 @@ def get_metric(name: str) -> Any:
             return CohensKappa()
         case "r_squared_score":
             return RSquaredScore()
+        case "precision":
+            return Precision()
     # Factory function to get a metric by name.
     # Return a metric instance given its str name.
 
@@ -190,3 +193,24 @@ class RSquaredScore(Metric):
         residual_sum_squares = np.sum((actual_truths - predicted_truths) ** 2)
 
         return 1 - (residual_sum_squares / total_sum_squares)
+
+
+class Precision(Metric):
+    """Class which computes the precision"""
+    def metric_function(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> dict:
+        """
+        Metric function that calculates the precision per category given.
+
+        Args:
+            predicted_truth: the predicted truths made by the model
+            actual_truth: the ground truth given in the database
+        Returns:
+            A dictionary with the precision of each category.
+        """
+        precision_dict = {}
+        unique_labels = np.unique(actual_truths).astype(str)
+        for label in unique_labels:
+            true_positives = np.sum(np.logical_and(predicted_truths == label, actual_truths == label))
+            true_and_false_positives = np.sum(predicted_truths == label)
+            precision_dict[label] = true_positives / true_and_false_positives
+        return precision_dict
