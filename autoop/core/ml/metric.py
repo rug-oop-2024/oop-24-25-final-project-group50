@@ -48,7 +48,7 @@ class Metric(ABC):
         Returns:
             a float with the calculation of the chosen metric.
         """
-        return self.metric_function(predicted_truths, ground_truths)
+        return self.evaluate(predicted_truths, ground_truths)
 
     # def predictions_for_regression(observations, model_parameters):
     #     pass
@@ -57,7 +57,7 @@ class Metric(ABC):
     #     pass
 
     @abstractmethod
-    def metric_function(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
+    def evaluate(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
         pass
 # add here concrete implementations of the Metric class
 
@@ -81,7 +81,7 @@ class Accuracy(Metric):
 
 class MeanSquaredError(Metric):
     """Class for the calculation of the mean squared error"""
-    def metric_function(self, predicted_truth, actual_truth) -> float:
+    def evaluate(self, predicted_truth, actual_truth) -> float:
         """
         The metric function to calculate the mean squared error.
 
@@ -114,7 +114,7 @@ class LogLoss(Metric):
 
 class MeanAbsolutePercentageError(Metric):
     """Class for the calculation of the mean absolute percentage error"""
-    def metric_function(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
+    def evaluate(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
         """
         The metric function to calculate the mean absolute percentage error.
 
@@ -170,7 +170,7 @@ class CohensKappa(Metric):
 
 class RSquaredScore(Metric):
     """Class which computes the R^2 score."""
-    def metric_function(self, predicted_truths: np.ndarray,
+    def evaluate(self, predicted_truths: np.ndarray,
                         actual_truths: np.ndarray) -> float:
         """
         Metric function that calculates the R^2 score of a model.
