@@ -19,15 +19,16 @@ class Artifact(BaseModel):
     name: str = Field(default="")
     version: str = Field(default="")
     asset_path: str = Field(default="")
-    tags: list = Field(default=None)
-    metadata: dict = Field(default=None)
+    tags: list = Field(default=[])
+    metadata: dict = Field(default={})
     data: bytes = Field(default=None)
     type: str = Field(default="")
     id: str = Field(default="")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.id = f"{base64.b64encode(self.asset_path.encode())}:{self.version}"
+        self.id = f"{base64.b64encode(self.name.encode())}_{self.version}"
+        self.id.replace("=", "_")
 
     def read(self) -> bytes:
         """
