@@ -13,7 +13,7 @@ METRICS = [
 ]  # add the names (in strings) of the metrics you implement
 
 
-def get_metric(name: str) -> Any:
+def get_metric(name: str) -> "Metric":
     match name:
         case "mean_squared_error":
             return MeanSquaredError()
@@ -67,7 +67,7 @@ class Metric(ABC):
 
 class Accuracy(Metric):
     """Class for the calculation of accuracy"""
-    def metric_function(self, predicted_truth, actual_truth) -> float:
+    def evaluate(self, predicted_truth, actual_truth) -> float:
         """
         The metric function to calculate the accuracy.
 
@@ -129,12 +129,12 @@ class MeanAbsolutePercentageError(Metric):
             actual value expressed in percentages
         """
         sum_part = np.sum(abs(actual_truths - predicted_truths) / actual_truths)
-        return sum_part / len(predicted_truths) * 100
+        return sum_part / len(predicted_truths)
 
 
 class CohensKappa(Metric):
     """Class that computes Cohen's Kappa"""
-    def metric_function(self, predicted_truth: np.ndarray, actual_truth: np.ndarray) -> float:
+    def evaluate(self, predicted_truth: np.ndarray, actual_truth: np.ndarray) -> float:
         """
         The metric function to calculate Cohen's Kappa.
 
@@ -144,10 +144,16 @@ class CohensKappa(Metric):
 
         Returns:
             The degree to which the model's predictions agree with the true
-            values. 
+            values.
             The closer to 1, the better.
         """
-        unique_labels = np.unique(actual_truth).astype(str)
+        # Convert one-hot encoded arrays to single labels
+        if predicted_truth.ndim > 1:  # Check if predictions are one-hot encoded
+            predicted_truth = np.argmax(predicted_truth, axis=1)  # Flatten to single labels
+        if actual_truth.ndim > 1:  # Check if actual truths are one-hot encoded
+            actual_truth = np.argmax(actual_truth, axis=1)  # Flatten to single labels
+
+        unique_labels = np.unique(actual_truth)
         label_num = len(unique_labels)
 
         index_map = {label: index for index, label in enumerate(unique_labels)}
@@ -155,6 +161,7 @@ class CohensKappa(Metric):
         confusion_matrix = np.zeros((label_num, label_num), dtype=int)
 
         for truth, prediction in zip(actual_truth, predicted_truth):
+            # truth, prediction = int(truth), int(prediction)
             confusion_matrix[index_map[truth],
                              index_map[prediction]] += 1
 
@@ -197,7 +204,7 @@ class RSquaredScore(Metric):
 
 class Precision(Metric):
     """Class which computes the precision"""
-    def metric_function(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> dict:
+    def evaluate(self, predicted_truth: np.ndarray, actual_truth: np.ndarray) -> dict:
         """
         Metric function that calculates the precision per category given.
 
@@ -207,10 +214,16 @@ class Precision(Metric):
         Returns:
             A dictionary with the precision of each category.
         """
-        precision_dict = {}
-        unique_labels = np.unique(actual_truths).astype(str)
+        # Convert one-hot encoded arrays to single labels
+        if predicted_truth.ndim > 1:  # Check if predictions are one-hot encoded
+            predicted_truth = np.argmax(predicted_truth, axis=1)  # Flatten to single labels
+        if actual_truth.ndim > 1:  # Check if actual truths are one-hot encoded
+            actual_truth = np.argmax(actual_truth, axis=1)  # Flatten to single labels
+
+        precision_dict = []
+        unique_labels = np.unique(actual_truth)
         for label in unique_labels:
-            true_positives = np.sum(np.logical_and(predicted_truths == label, actual_truths == label))
-            true_and_false_positives = np.sum(predicted_truths == label)
-            precision_dict[label] = true_positives / true_and_false_positives
-        return precision_dict
+            true_positives = np.sum(np.logical_and(predicted_truth == label, actual_truth == label))
+            true_and_false_positives = np.sum(predicted_truth == label)
+            precision_dict.append(true_positives / true_and_false_positives)
+        return np.mean(precision_dict)
