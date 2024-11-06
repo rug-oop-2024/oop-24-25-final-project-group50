@@ -12,4 +12,4 @@ class Feature(BaseModel):
     type: str = Field(default="")
 
     def __str__(self):
-        return f"name: {self.name}, type: {self.type}"
+        return f"Name: {self.name}, Type: {self.type}"
