@@ -4,8 +4,13 @@ import pandas as pd
 from typing import Any
 from app.core.system import AutoMLSystem
 from autoop.core.ml.dataset import Dataset
-from autoop.core.ml.model.regression import MultipleLinearRegression, Lasso, ElasticNet
-from autoop.core.ml.model.classification import KNearestNeighbors, MultiLayerPerceptron, RandomForestClassifier
+from autoop.core.ml.model.regression import MultipleLinearRegression
+from autoop.core.ml.model.regression.lasso import Lasso
+from autoop.core.ml.model.regression.elastic_net import ElasticNet
+from autoop.core.ml.model.classification.k_nearest_neighbours import KNearestNeighbors
+from autoop.core.ml.model.classification.multi_layer_perceptron import MultiLayerPerceptron
+from autoop.core.ml.model.classification.random_forest_classifier import RandomForestClassifier
+
 from autoop.functional.feature import detect_feature_types
 from autoop.core.ml.metric import get_metric
 
@@ -39,14 +44,16 @@ write_helper_text("In this section, you can design a machine learning pipeline t
 automl = AutoMLSystem.get_instance()
 
 datasets = automl.registry.list(type="dataset")
-
-# your code here
-
-cur_dataset = st.selectbox(label="Select the dataset you want to use", options=datasets)
-
-feature_list = detect_feature_types(cur_dataset)
-
-input_features = st.multiselect(label="Choose the input features", options=feature_list)
+if datasets != []:
+    datasets_names = [dataset.name for dataset in datasets]
+    name_cur_dataset = st.selectbox(label="Select the dataset you want to use", options=datasets_names)
+    cur_dataset = datasets[datasets_names.index(name_cur_dataset)]
+    
+    feature_list = detect_feature_types(cur_dataset)
+    print('-'*69)
+    print(feature_list)
+    print('-'*69)
+    input_features = st.multiselect(label="Choose the input features", options=feature_list)
 
 # code to remove selected features from list here
 
