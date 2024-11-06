@@ -12,4 +12,4 @@ class Feature(BaseModel):
     type: str = Field(default="")
 
     def __str__(self):
-        raise NotImplementedError("To be implemented.")
+        return f"name: {self.name}, type: {self.type}"
