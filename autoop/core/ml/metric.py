@@ -148,12 +148,13 @@ class CohensKappa(Metric):
             The closer to 1, the better.
         """
         # Convert one-hot encoded arrays to single labels
+        print(actual_truth)
         if predicted_truth.ndim > 1:  # Check if predictions are one-hot encoded
             predicted_truth = np.argmax(predicted_truth, axis=1)  # Flatten to single labels
         if actual_truth.ndim > 1:  # Check if actual truths are one-hot encoded
             actual_truth = np.argmax(actual_truth, axis=1)  # Flatten to single labels
 
-        unique_labels = np.unique(actual_truth)
+        unique_labels = np.unique(np.concatenate((actual_truth, predicted_truth)))
         label_num = len(unique_labels)
 
         index_map = {label: index for index, label in enumerate(unique_labels)}
@@ -171,6 +172,7 @@ class CohensKappa(Metric):
         row_sum = np.sum(confusion_matrix, axis=1)
         column_sum = np.sum(confusion_matrix, axis=0)
         expected_agreement = np.sum((row_sum * column_sum) / num_samples**2)
+        print(observed_agreement, expected_agreement)
 
         return (
             (observed_agreement - expected_agreement) /
