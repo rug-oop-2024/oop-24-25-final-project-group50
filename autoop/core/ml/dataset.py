@@ -26,3 +26,13 @@ class Dataset(Artifact):
         bytes = data.to_csv(index=False).encode()
         return super().save(bytes)
     
+    @staticmethod
+    def from_artifact(artifact: Artifact) -> "Dataset":
+        return Dataset(
+            name=artifact.name,
+            version=artifact.version,
+            asset_path=artifact.asset_path,
+            tags=artifact.tags,
+            metadata=artifact.metadata,
+            data=artifact.data
+        )
