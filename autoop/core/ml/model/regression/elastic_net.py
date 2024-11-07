@@ -47,4 +47,4 @@ class ElasticNet(Model):
         Returns:
             An array containing n predictions based on the fitted data
         """
-        return self._en.predict(observations)
+        return self._en.predict(observations).reshape(-1, 1)

@@ -19,6 +19,7 @@ class RandomForestClassifier(Model):
         """
         super().__init__()
         self._rfs = Rfs()
+        self._type = "classification"
 
     def fit(self, observations: np.ndarray, ground_truth: np.ndarray) -> None:
         """

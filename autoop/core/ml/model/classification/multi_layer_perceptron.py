@@ -20,6 +20,7 @@ class MultiLayerPerceptron(Model):
         """
         super().__init__()
         self._mlp = Mlp()
+        self._type = "classification"
 
     def fit(self, observations: np.ndarray, ground_truth: np.ndarray) -> None:
         """

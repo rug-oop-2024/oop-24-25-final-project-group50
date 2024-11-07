@@ -1,12 +1,12 @@
 import numpy as np
 from pydantic import PrivateAttr
-from sklearn.linear_model import Lasso as Ls
+from sklearn.linear_model import LassoCV as Ls
 
 from autoop.core.ml.model import Model
 
 
-class Lasso(Model):
-    """A wrapper class for sklearn's Lasso."""
+class LassoCV(Model):
+    """A wrapper class for sklearn's LassoCV."""
 
     _ls: Ls = PrivateAttr(default=None)
 
@@ -47,4 +47,4 @@ class Lasso(Model):
         Returns:
             An array containing n predictions based on the fitted data
         """
-        return self._ls.predict(observations)
+        return self._ls.predict(observations).reshape(-1, 1)

@@ -31,8 +31,6 @@ Implemented models:
 """
 
 
-
-
 class Model(ABC, BaseModel):
     """An abstract base class for a generic Machine Learning model."""
 
