@@ -14,19 +14,17 @@ def detect_feature_types(dataset: Dataset) -> List[Feature]:
         List[Feature]: List of features with their types.
     """
 
-    asset_path = dataset.asset_path
-    with open(f"assets/objects/{dataset.asset_path}", 'rb') as file:
-        df_data = pd.read_csv(file)
+    # asset_path = dataset.asset_path
+    # with open(f"assets/objects/{dataset.asset_path}", 'rb') as file:
+    #     df_data = pd.read_csv(file)
     # data_str = data.decode("utf-8")
     # df_data = pd.read_csv(StringIO(data_str))
-    print('-' * 69)
-    print(df_data)
-    print('-' * 69)
+    data = dataset.read()
     feature_list = []
-    for feature in df_data.columns:
-        if is_object_dtype(df_data[feature]):
+    for feature in data.columns:
+        if is_object_dtype(data[feature]):
             feature_type = "categorical"
-        elif is_numeric_dtype(df_data[feature]):
+        elif is_numeric_dtype(data[feature]):
             feature_type = "numerical"
         else:
             raise TypeError(f"{feature} has unsupported types")
