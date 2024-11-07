@@ -12,7 +12,7 @@ if uploaded_datasets:
     save_button = st.button("Save File")
     if save_button:
         for item in uploaded_datasets:
-            in_dataframe = pd.DataFrame(data=item)
+            in_dataframe = pd.read_csv(item)
             as_dataset = Dataset.from_dataframe(in_dataframe, name=item.name, asset_path="./assets")
             as_dataset.asset_path = f"./{as_dataset.id}"
             automl._registry.register(as_dataset)
