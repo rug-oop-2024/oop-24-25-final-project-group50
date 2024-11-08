@@ -115,7 +115,7 @@ if name_cur_dataset and input_features and target_feature:
                 target_feature=target_feature,
                 split=data_split
             )
-            st.write(new_pipeline.execute())
+            # st.write(new_pipeline.execute())
 
     # new_pipeline = Pipeline(
     #     metrics=[get_metric("r_squared_score")],
@@ -126,4 +126,10 @@ if name_cur_dataset and input_features and target_feature:
     #     split=0.8
     # )
 # Pipeline results here
-
+            pipeline_results = new_pipeline.execute()
+            metric_results = pipeline_results.get('metrics')
+            for metric in metric_results:
+                st.write(f"{metric[0].__class__.__name__}: {metric[1]:.3f}")
+            st.write(pipeline_results.get('predictions'))
+            pipeline_name = st.text_input("Give your pipeline a name")
+            pipeline_version = st.text_input("write down the version of the pipeline")
