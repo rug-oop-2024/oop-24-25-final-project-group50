@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import pickle
 
 from typing import Any
 from app.core.system import AutoMLSystem
@@ -11,6 +12,7 @@ from autoop.core.ml.model.classification.k_nearest_neighbours import KNearestNei
 from autoop.core.ml.model.classification.multi_layer_perceptron import MultiLayerPerceptron
 from autoop.core.ml.model.classification.random_forest_classifier import RandomForestClassifier
 from autoop.core.ml.pipeline import Pipeline
+from autoop.core.ml.artifact import Artifact
 
 from autoop.functional.feature import detect_feature_types
 from autoop.core.ml.metric import get_metric
@@ -48,6 +50,9 @@ def write_helper_text(text: str):
 
 st.write("# ⚙ Modelling")
 write_helper_text("In this section, you can design a machine learning pipeline to train a model on a dataset.")
+
+if "model_trained" not in st.session_state:
+    st.session_state.model_trained = False
 
 automl = AutoMLSystem.get_instance()
 
@@ -102,12 +107,16 @@ if name_cur_dataset and input_features and target_feature:
         with col2:
             st.markdown(f"**Model**: {model_selection}")
             st.markdown(f"**Data Split**: {data_split}")
-            st.markdown(f"**Metrics**: {", ".join(selected_metrics) if selected_metrics else "None"}")
+            metric_text = ", ".join(selected_metrics) if selected_metrics else "None"
+            st.markdown(f"**Metrics**: {metric_text}")
 
 # Train button here
         if st.button(label="Train model"):
+            st.session_state.model_trained = True
+        
+        if st.session_state.model_trained:
             pipeline_metrics = [get_metric(metric) for metric in selected_metrics]
-            new_pipeline = Pipeline(
+            cur_pipeline = Pipeline(
                 metrics=pipeline_metrics,
                 dataset=cur_dataset,
                 model=model,
@@ -126,10 +135,60 @@ if name_cur_dataset and input_features and target_feature:
     #     split=0.8
     # )
 # Pipeline results here
-            pipeline_results = new_pipeline.execute()
+            pipeline_results = cur_pipeline.execute()
             metric_results = pipeline_results.get('metrics')
             for metric in metric_results:
                 st.write(f"{metric[0].__class__.__name__}: {metric[1]:.3f}")
             st.write(pipeline_results.get('predictions'))
+            st.session_state.save_pipeline_clicked = True
+            st.session_state.cur_pipeline = cur_pipeline
+
+            st.write("Save Pipeline: ")
             pipeline_name = st.text_input("Give your pipeline a name")
             pipeline_version = st.text_input("write down the version of the pipeline")
+
+            if pipeline_name and pipeline_version:
+                if st.button(label="Save pipeline"):
+                    cur_pipeline = st.session_state.cur_pipeline
+                    pipeline_artifacts = cur_pipeline.artifacts
+
+                    saved_pipeline = Artifact(
+                        name=pipeline_name,
+                        version=pipeline_version,
+                        asset_path="./assets",
+                        type="pipeline",
+                        data=pickle.dumps("test")
+                    )
+                    for artifact in pipeline_artifacts:
+                        saved_pipeline.metadata[artifact.name] = artifact.id
+                        artifact.asset_path = f"./{artifact.id}"
+                        automl.registry.register(artifact)
+                        
+                    saved_pipeline.asset_path = f"./{saved_pipeline.id}"
+                    automl.registry.register(saved_pipeline)
+                    st.success("Pipeline saved")
+
+
+
+
+# if st.session_state.save_pipeline_clicked:
+#     if st.button(label="Save pipeline"):
+#         pipeline_name = st.text_input("Give your pipeline a name")
+#         pipeline_version = st.text_input("write down the version of the pipeline")
+
+#         if pipeline_name and pipeline_version:
+#             cur_pipeline = st.session_state.cur_pipeline
+#             pipeline_artifacts = cur_pipeline.artifacts
+
+#             saved_pipeline = Artifact(
+#                 name=pipeline_name,
+#                 version=pipeline_version,
+#                 asset_path="./assets",
+#                 type="pipeline"
+#             )
+#             for artifact in pipeline_artifacts:
+#                 saved_pipeline.metadata[artifact.name] = artifact.id
+#                 automl.registry.register(artifact)
+#             automl.registry.register(saved_pipeline)
+#             st.success("Pipeline saved")
+
