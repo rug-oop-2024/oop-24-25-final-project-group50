@@ -32,15 +32,14 @@ def get_model(name: str) -> Any:
             model = RandomForestClassifier()
     return model
 
-METRICS = [
-    "mean_squared_error",
-    "accuracy",
-    "log_loss",
-    "mean_absolute_percentage_error",
-    "cohens_kappa",
-    "r_squared_score",
-    "precision"
-]
+# METRICS = [
+#     "mean_squared_error",
+#     "accuracy",
+#     "mean_absolute_percentage_error",
+#     "cohens_kappa",
+#     "r_squared_score",
+#     "precision"
+# ]
 
 st.set_page_config(page_title="Modelling", page_icon="📈")
 
@@ -56,12 +55,11 @@ datasets = automl.registry.list(type="dataset")
 if datasets != []:
     datasets_names = [dataset.name for dataset in datasets]
     name_cur_dataset = st.selectbox(label="Select the dataset you want to use", options=datasets_names)
-    cur_dataset = Dataset.from_artifact(datasets[datasets_names.index(name_cur_dataset)])
 
+    cur_dataset = Dataset.from_artifact(datasets[datasets_names.index(name_cur_dataset)])
     feature_list = detect_feature_types(cur_dataset)
-    print('-'*69)
-    print(feature_list)
-    print('-'*69)
+    feature_list = feature_list[1:]
+
     input_features = st.multiselect(label="Choose the input features", options=feature_list)
 
 # code to remove selected features from list here
@@ -73,12 +71,8 @@ if target_feature.type == "categorical":
     task_type = "classification"
     model_options = ["K Nearest Neighbors", "Multilayer Preceptron", "Random Forest Classifier"]
     metric_options = [
-        "Mean Squared Error",
         "Accuracy",
-        "Log Loss",
-        "Mean Absolute Percentage Error",
         "Cohens Kappa",
-        "R-squared Score",
         "Precision"
     ]
     
@@ -87,36 +81,49 @@ else:
     model_options = ["Multiple linear regression", "Lasso", "Elastic Net"]
     metric_options = ["Mean Squared Error", "Mean Absolute Percentage Error", "R-squared score"]
 
+if name_cur_dataset and input_features and target_feature:
+    model_selection = st.selectbox(label="Choose the model you want to use:", options=model_options)
 
-model_selection = st.selectbox(label="Choose the model you want to use:", options=model_options)
+    model = get_model(model_selection)
 
-model = get_model(model_selection)
-
-data_split = st.slider(label="Select a data split:", min_value=0.0, max_value=1.0)
-selected_metrics = st.multiselect(label="Select the metrics you want to use:", options=METRICS)
-
-pipeline_metrics = [get_metric(metric) for metric in selected_metrics]
+    data_split = st.slider(label="Select a data split:", min_value=0.0, max_value=1.0, value=0.80)
+    selected_metrics = st.multiselect(label="Select the metrics you want to use:", options=metric_options)
 
 # Summary here
+    if selected_metrics:
+        names_input_features = [feature.name for feature in input_features]
+        st.subheader("Pipeline Summary")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown(f"**Dataset**: {name_cur_dataset}")
+            st.markdown(f"**Input Features**: {', '.join(names_input_features) if input_features else 'None'}")
+            st.markdown(f"**Target**: {target_feature}")
+        
+        with col2:
+            st.markdown(f"**Model**: {model_selection}")
+            st.markdown(f"**Data Split**: {data_split}")
+            st.markdown(f"**Metrics**: {", ".join(selected_metrics) if selected_metrics else "None"}")
 
 # Train button here
-if st.button(label="Train model"):
-    # new_pipeline = Pipeline(
-    #     metrics=pipeline_metrics,
-    #     dataset=cur_dataset,
-    #     model=model,
-    #     input_features=input_features,
-    #     target_feature=target_feature,
-    #     split=data_split
-    # )
-    new_pipeline = Pipeline(
-        metrics=[get_metric("r_squared_score")],
-        dataset=cur_dataset,
-        model=MultipleLinearRegression(),
-        input_features=feature_list[:-1],
-        target_feature=feature_list[-1],
-        split=0.8
-    )
-    st.write(new_pipeline.execute())
+        if st.button(label="Train model"):
+            pipeline_metrics = [get_metric(metric) for metric in selected_metrics]
+            new_pipeline = Pipeline(
+                metrics=pipeline_metrics,
+                dataset=cur_dataset,
+                model=model,
+                input_features=input_features,
+                target_feature=target_feature,
+                split=data_split
+            )
+            st.write(new_pipeline.execute())
 
+    # new_pipeline = Pipeline(
+    #     metrics=[get_metric("r_squared_score")],
+    #     dataset=cur_dataset,
+    #     model=MultipleLinearRegression(),
+    #     input_features=feature_list[:-1],
+    #     target_feature=feature_list[-1],
+    #     split=0.8
+    # )
 # Pipeline results here
+
