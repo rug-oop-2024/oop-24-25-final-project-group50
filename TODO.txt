@@ -6,3 +6,18 @@ ML/metric/extensions: allebei 1x classification metric en 1x regression metric
 ML/model: moeten we nog zien
 ML/model/extensions: Niek 1x classification + 1x regression. Daniël 1x classification
 ML/pipeline/evaluation: moeten we nog zien
+
+
+
+
+Pipeline naar artifact krijgen
+page maken voor saved pipelines
+flake8, docstrings, type hint
+Page 1 en 2 clean maken
+style yml in workflow krijgen
+Verdeling opschrijven
+belangrijke keuzes brainstormen: pydantic, abstract classes
+
+later:
+html documentation
+
