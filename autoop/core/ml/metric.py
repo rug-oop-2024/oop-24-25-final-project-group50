@@ -3,31 +3,30 @@ from typing import Any
 import numpy as np
 
 METRICS = [
-    "mean_squared_error",
-    "accuracy",
-    "log_loss",
-    "mean_absolute_percentage_error",
-    "cohens_kappa",
-    "r_squared_score",
-    "precision"
+    "Mean Squared Error",
+    "Accuracy",
+    "Mean Absolute Percentage Error",
+    "Cohens Kappa",
+    "R-squared score",
+    "Precision"
 ]  # add the names (in strings) of the metrics you implement
 
 
 def get_metric(name: str) -> "Metric":
     match name:
-        case "mean_squared_error":
+        case "Mean Squared Error":
             return MeanSquaredError()
-        case "accuracy":
+        case "Accuracy":
             return Accuracy()
         case "log_loss":
             return LogLoss()
-        case "mean_absolute_percentage_error":
+        case "Mean Absolute Percentage Error":
             return MeanAbsolutePercentageError()
-        case "cohens_kappa":
+        case "Cohens Kappa":
             return CohensKappa()
-        case "r_squared_score":
+        case "R-squared score":
             return RSquaredScore()
-        case "precision":
+        case "Precision":
             return Precision()
     # Factory function to get a metric by name.
     # Return a metric instance given its str name.
