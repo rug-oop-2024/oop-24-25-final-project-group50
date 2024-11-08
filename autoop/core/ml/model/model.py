@@ -7,7 +7,6 @@
 
 # class Model:
 #     pass  # your code (attribute and methods) here
-    
 
 from abc import ABC, abstractmethod
 from copy import deepcopy
@@ -21,7 +20,7 @@ Model still needs:
     type attribute
     to_artifact method
 
-    
+
 Implemented models:
     MultipleLinearRegression - regression
     KNN - classification
@@ -48,7 +47,7 @@ class Model(ABC, BaseModel):
             A deepcopy of the parameters
         """
         return deepcopy(self._parameters)
-    
+
     @property
     def type(self) -> str:
         """

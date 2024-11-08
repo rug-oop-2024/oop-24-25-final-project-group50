@@ -23,12 +23,12 @@
 #         super().__init__()
 #         self._type = "classification"
 
-#     def fit(self, observations: np.ndarray, ground_truth: np.ndarray) -> None:
+#     def fit(self, observations: np.ndarray, ground_truth: np.ndarray) ->None:
 #         """
 #         Train the model based on observations and ground truths.
 
 #         Args:
-#             observations: an n x m matrix with n observations over m variables
+#             observations: an nxm matrix with n observations over m variables
 #             ground_truth: a vector with n responses
 #         Returns:
 #             None
@@ -43,7 +43,7 @@
 #         Predict responses based on given observations.
 
 #         Args:
-#             observations: an n x m matrix with n observations over m variables
+#             observations:an n x m matrix with n observations over m variables
 #             to base the prediction on
 #         Returns:
 #             A list containing n predictions based on the fitted data
@@ -63,7 +63,7 @@
 #             self._parameters["observations"] - observation, axis=1
 #         )
 #         k_idx = np.argsort(distances)[: self.k]
-#         k_nearest_labels = [self._parameters["ground_truth"][i] for i in k_idx]
+#         k_nearest_labels=[self._parameters["ground_truth"][i] for i in k_idx]
 #         print(k_nearest_labels)
 #         most_common = Counter(k_nearest_labels).most_common()
 #         return most_common[0][0]

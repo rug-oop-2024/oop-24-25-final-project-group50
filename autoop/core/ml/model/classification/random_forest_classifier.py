@@ -3,6 +3,7 @@ from autoop.core.ml.model import Model
 from pydantic import PrivateAttr
 import numpy as np
 
+
 class RandomForestClassifier(Model):
     """A wrapper class for sklearn's RandomForestClassifier."""
 
@@ -45,4 +46,3 @@ class RandomForestClassifier(Model):
             An array containing n predictions based on the fitted data
         """
         return self._rfs.predict(observations)
-
