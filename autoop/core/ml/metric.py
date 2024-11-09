@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Any
 import numpy as np
 
 METRICS = [
@@ -34,8 +33,6 @@ def get_metric(name: str) -> "Metric":
 
 class Metric(ABC):
     """Base class for all metrics."""
-    # your code here
-    # remember: metrics take ground truth and prediction as input and return a real number
 
     def __call__(self, predicted_truths: np.ndarray,
                  ground_truths: np.ndarray) -> float:
@@ -59,9 +56,9 @@ class Metric(ABC):
     #     pass
 
     @abstractmethod
-    def evaluate(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
+    def evaluate(self, predicted_truths: np.ndarray,
+                 actual_truths: np.ndarray) -> float:
         pass
-# add here concrete implementations of the Metric class
 
 
 class Accuracy(Metric):
@@ -101,11 +98,14 @@ class MeanSquaredError(Metric):
 
 class LogLoss(Metric):
     """Class for the calculation of the logloss"""
-    def metric_function(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
+    def metric_function(self, predicted_truths: np.ndarray,
+                        actual_truths: np.ndarray) -> float:
         """
-        The code assumes that predicted_truths consists of an array with chances which are added up together 1
+        The code assumes that predicted_truths consists of an array with \
+              chances which are added up together 1
         E.g. [0.1, 0.2, 0.6, 0.1]
-        The code assumes that actual_truths consists of an array with a 0 or 1, indicating the right classification.
+        The code assumes that actual_truths consists of an array \
+              with a 0 or 1, indicating the right classification.
         E.g. [0, 0, 1, 0]
         """
         multiplied_arrays = np.multiply(predicted_truths, actual_truths)
@@ -116,7 +116,8 @@ class LogLoss(Metric):
 
 class MeanAbsolutePercentageError(Metric):
     """Class for the calculation of the mean absolute percentage error"""
-    def evaluate(self, predicted_truths: np.ndarray, actual_truths: np.ndarray) -> float:
+    def evaluate(self, predicted_truths: np.ndarray,
+                 actual_truths: np.ndarray) -> float:
         """
         The metric function to calculate the mean absolute percentage error.
 
@@ -127,13 +128,15 @@ class MeanAbsolutePercentageError(Metric):
             The average degree to which the predicted value differs from the
             actual value expressed in percentages
         """
-        sum_part = np.sum(abs(actual_truths - predicted_truths) / actual_truths)
+        sum_part = np.sum(abs(actual_truths - predicted_truths)
+                          / actual_truths)
         return sum_part / len(predicted_truths)
 
 
 class CohensKappa(Metric):
     """Class that computes Cohen's Kappa"""
-    def evaluate(self, predicted_truth: np.ndarray, actual_truth: np.ndarray) -> float:
+    def evaluate(self, predicted_truth: np.ndarray,
+                 actual_truth: np.ndarray) -> float:
         """
         The metric function to calculate Cohen's Kappa.
 
@@ -148,12 +151,15 @@ class CohensKappa(Metric):
         """
         # Convert one-hot encoded arrays to single labels
         print(actual_truth)
-        if predicted_truth.ndim > 1:  # Check if predictions are one-hot encoded
-            predicted_truth = np.argmax(predicted_truth, axis=1)  # Flatten to single labels
-        if actual_truth.ndim > 1:  # Check if actual truths are one-hot encoded
-            actual_truth = np.argmax(actual_truth, axis=1)  # Flatten to single labels
+        if predicted_truth.ndim > 1:  # Check if prediction is one-hot encoded
+            predicted_truth = np.argmax(predicted_truth,
+                                        axis=1)  # Flatten to single labels
+        if actual_truth.ndim > 1:  # Check if actual truth is one-hot encoded
+            actual_truth = np.argmax(actual_truth,
+                                     axis=1)  # Flatten to single labels
 
-        unique_labels = np.unique(np.concatenate((actual_truth, predicted_truth)))
+        unique_labels = np.unique(np.concatenate((actual_truth,
+                                                  predicted_truth)))
         label_num = len(unique_labels)
 
         index_map = {label: index for index, label in enumerate(unique_labels)}
@@ -182,7 +188,7 @@ class CohensKappa(Metric):
 class RSquaredScore(Metric):
     """Class which computes the R^2 score."""
     def evaluate(self, predicted_truths: np.ndarray,
-                        actual_truths: np.ndarray) -> float:
+                 actual_truths: np.ndarray) -> float:
         """
         Metric function that calculates the R^2 score of a model.
 
@@ -205,7 +211,8 @@ class RSquaredScore(Metric):
 
 class Precision(Metric):
     """Class which computes the precision"""
-    def evaluate(self, predicted_truth: np.ndarray, actual_truth: np.ndarray) -> dict:
+    def evaluate(self, predicted_truth: np.ndarray,
+                 actual_truth: np.ndarray) -> dict:
         """
         Metric function that calculates the precision per category given.
 
@@ -216,15 +223,18 @@ class Precision(Metric):
             A dictionary with the precision of each category.
         """
         # Convert one-hot encoded arrays to single labels
-        if predicted_truth.ndim > 1:  # Check if predictions are one-hot encoded
-            predicted_truth = np.argmax(predicted_truth, axis=1)  # Flatten to single labels
-        if actual_truth.ndim > 1:  # Check if actual truths are one-hot encoded
-            actual_truth = np.argmax(actual_truth, axis=1)  # Flatten to single labels
+        if predicted_truth.ndim > 1:  # Check if prediction is one-hot encoded
+            predicted_truth = np.argmax(predicted_truth,
+                                        axis=1)  # Flatten to single labels
+        if actual_truth.ndim > 1:  # Check if actual truth is one-hot encoded
+            actual_truth = np.argmax(actual_truth,
+                                     axis=1)  # Flatten to single labels
 
         precision_dict = []
         unique_labels = np.unique(actual_truth)
         for label in unique_labels:
-            true_positives = np.sum(np.logical_and(predicted_truth == label, actual_truth == label))
+            true_positives = np.sum(np.logical_and(predicted_truth == label,
+                                                   actual_truth == label))
             true_and_false_positives = np.sum(predicted_truth == label)
             precision_dict.append(true_positives / true_and_false_positives)
         return np.mean(precision_dict)
