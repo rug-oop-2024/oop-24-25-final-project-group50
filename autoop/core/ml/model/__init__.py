@@ -12,30 +12,31 @@ from autoop.core.ml.model.classification.multi_layer_perceptron \
     import MultiLayerPerceptron
 
 REGRESSION_MODELS = [
-    "MultipleLinearRegression",
-    "ElasticNet",
+    "Multiple Linear Regression",
+    "Elastic Net",
     "Lasso"
 ]
 
 CLASSIFICATION_MODELS = [
-    "kNearestNeighbors",
-    "RandomForestClassifier",
-    "MultiLayerPerceptron"
+    "K Nearest Neighbors",
+    "Random Forest Classifier",
+    "Multi Layer Perceptron"
 ]
 
 
 def get_model(model_name: str) -> Model:
+    print(model_name)
     """Factory function to get a model by name."""
     match model_name:
-        case "MultipleLinearRegression":
+        case "Multiple Linear Regression":
             return MultipleLinearRegression()
-        case "ElasticNet":
+        case "Elastic Net":
             return ElasticNet()
         case "Lasso":
             return LassoCV()
-        case "kNearestNeighbors":
+        case "K Nearest Neighbors":
             return KNearestNeighbors()
-        case "RandomForestClassifier":
+        case "Random Forest Classifier":
             return RandomForestClassifier()
-        case "MultiLayerPerceptron":
+        case "Multi Layer Perceptron":
             return MultiLayerPerceptron()
