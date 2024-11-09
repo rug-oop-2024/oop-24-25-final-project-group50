@@ -9,9 +9,19 @@ from autoop.functional.feature import detect_feature_types
 from autoop.core.ml.model.regression import MultipleLinearRegression
 from autoop.core.ml.metric import MeanSquaredError
 
+
 class TestPipeline(unittest.TestCase):
+    """A class to test the pipeline functionality"""
 
     def setUp(self) -> None:
+        """
+        Set up for testing
+
+        Args:
+            None
+        Returns:
+            None
+        """
         data = fetch_openml(name="adult", version=1, parser="auto")
         df = pd.DataFrame(
             data.data,
@@ -26,33 +36,76 @@ class TestPipeline(unittest.TestCase):
         self.pipeline = Pipeline(
             dataset=self.dataset,
             model=MultipleLinearRegression(),
-            input_features=list(filter(lambda x: x.name != "age", self.features)),
+            input_features=list(filter(lambda x: x.name != "age",
+                                       self.features)),
             target_feature=Feature(name="age", type="numerical"),
             metrics=[MeanSquaredError()],
             split=0.8
         )
         self.ds_size = data.data.shape[0]
 
-    def test_init(self):
+    def test_init(self) -> None:
+        """
+        Test the init method
+
+        Args:
+            None
+        Returns:
+            None
+        """
         self.assertIsInstance(self.pipeline, Pipeline)
 
-    def test_preprocess_features(self):
+    def test_preprocess_features(self) -> None:
+        """
+        Test the preprocess_features method
+
+        Args:
+            None
+        Returns:
+            None
+        """
         self.pipeline._preprocess_features()
         self.assertEqual(len(self.pipeline._artifacts), len(self.features))
 
-    def test_split_data(self):
+    def test_split_data(self) -> None:
+        """
+        Test the split_data method
+
+        Args:
+            None
+        Returns:
+            None
+        """
         self.pipeline._preprocess_features()
         self.pipeline._split_data()
-        self.assertEqual(self.pipeline._train_X[0].shape[0], int(0.8 * self.ds_size))
-        self.assertEqual(self.pipeline._test_X[0].shape[0], self.ds_size - int(0.8 * self.ds_size))
+        self.assertEqual(self.pipeline._train_X[0].shape[0],
+                         int(0.8 * self.ds_size))
+        self.assertEqual(self.pipeline._test_X[0].shape[0],
+                         self.ds_size - int(0.8 * self.ds_size))
 
-    def test_train(self):
+    def test_train(self) -> None:
+        """
+        Test the train method
+
+        Args:
+            None
+        Returns:
+            None
+        """
         self.pipeline._preprocess_features()
         self.pipeline._split_data()
         self.pipeline._train()
         self.assertIsNotNone(self.pipeline._model.parameters)
 
-    def test_evaluate(self):
+    def test_evaluate(self) -> None:
+        """
+        Test the evaluate method
+
+        Args:
+            None
+        Returns:
+            None
+        """
         self.pipeline._preprocess_features()
         self.pipeline._split_data()
         self.pipeline._train()
