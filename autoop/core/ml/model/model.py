@@ -15,6 +15,7 @@ from autoop.core.ml.artifact import Artifact
 
 import numpy as np
 from pydantic import BaseModel, PrivateAttr
+import pickle
 
 """
 Model still needs:
@@ -88,4 +89,5 @@ class Model(ABC, BaseModel):
         pass
 
     def to_artifact(self, name: str) -> Artifact:
-        return Artifact(name=name, type=self._type)
+        print(self._parameters)
+        return Artifact(name=name, type="model", data=pickle.dumps(self._parameters))
