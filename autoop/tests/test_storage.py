@@ -6,16 +6,42 @@ import random
 import tempfile
 import os
 
-class TestStorage(unittest.TestCase):
 
-    def setUp(self):
+class TestStorage(unittest.TestCase):
+    """A class to test the storage functionality"""
+
+    def setUp(self) -> None:
+        """
+        Set up for testing
+
+        Args:
+            None
+        Returns:
+            None
+        """
         temp_dir = tempfile.mkdtemp()
         self.storage = LocalStorage(temp_dir)
 
-    def test_init(self):
+    def test_init(self) -> None:
+        """
+        Test the init method
+
+        Args:
+            None
+        Returns:
+            None
+        """
         self.assertIsInstance(self.storage, LocalStorage)
 
-    def test_store(self):
+    def test_store(self) -> None:
+        """
+        Test the store method
+
+        Args:
+            None
+        Returns:
+            None
+        """
         key = str(random.randint(0, 100))
         test_bytes = bytes([random.randint(0, 255) for _ in range(100)])
         key = f"test{os.sep}path"
@@ -28,7 +54,15 @@ class TestStorage(unittest.TestCase):
         except Exception as e:
             self.assertIsInstance(e, NotFoundError)
 
-    def test_delete(self):
+    def test_delete(self) -> None:
+        """
+        Test the delete method
+
+        Args:
+            None
+        Returns:
+            None
+        """
         key = str(random.randint(0, 100))
         test_bytes = bytes([random.randint(0, 255) for _ in range(100)])
         key = f"test{os.sep}path"
@@ -39,13 +73,21 @@ class TestStorage(unittest.TestCase):
         except Exception as e:
             self.assertIsInstance(e, NotFoundError)
 
-    def test_list(self):
+    def test_list(self) -> None:
+        """
+        Test the list method
+
+        Args:
+            None
+        Returns:
+            None
+        """
         key = str(random.randint(0, 100))
         test_bytes = bytes([random.randint(0, 255) for _ in range(100)])
-        random_keys = [f"test{os.sep}{random.randint(0, 100)}" for _ in range(10)]
+        random_keys = [f"test{os.sep}{random.randint(0, 100)}"
+                       for _ in range(10)]
         for key in random_keys:
             self.storage.save(test_bytes, key)
         keys = self.storage.list("test")
         keys = [f"{os.sep}".join(key.split(f"{os.sep}")[-2:]) for key in keys]
         self.assertEqual(set(keys), set(random_keys))
-            
