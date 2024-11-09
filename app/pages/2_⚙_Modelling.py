@@ -1,5 +1,6 @@
 import streamlit as st
 import pickle
+import io
 
 from typing import Any
 from app.core.system import AutoMLSystem
@@ -189,6 +190,52 @@ if name_cur_dataset and input_features and target_feature:
                     automl.registry.register(saved_pipeline)
                     st.success("Pipeline saved")
 
+                    def read_pickle_data(path):
+                        data_bytes = automl._storage.load(path)
+                        with io.BytesIO(data_bytes) as file:
+                            data = pickle.load(file)
+                        return data
+                    
+                    pipeline_list = automl.registry.list(type="pipeline")
+                    names_pipeline_list = [pipeline.name for pipeline in pipeline_list]
+                    data_pipeline_list = [pipeline.metadata for pipeline in pipeline_list]
+                    # print(names_pipeline_list)
+                    # print(data_pipeline_list)
+                    name_cur_pipeline = st.selectbox(label="Select the pipeline you \
+                                    want to use", options=names_pipeline_list)
+
+                    current_pipeline = pipeline_list[names_pipeline_list.index(name_cur_pipeline)]
+
+                    config_path = current_pipeline.metadata.get("pipeline_config")
+                    pipeline_model = current_pipeline.metadata.get("pipeline_model_classification", "pipeline_model_regression")
+                    radius = current_pipeline.metadata.get("yield")
+
+                    print("-"*70)
+                    print(read_pickle_data(radius))
+                    print(read_pickle_data(pipeline_model))
+                    print("-"*70)
+
+                    pipeline_config = read_pickle_data(config_path)
+                    input_features = pipeline_config.get('input_features')
+                    target_feature = pipeline_config.get("target_feature")
+                    split = pipeline_config.get("split")
+
+
+        # return Pipeline(
+        #     name=artifact.name,
+        #     version=artifact.version,
+        #     asset_path=artifact.asset_path,
+        #     tags=artifact.tags,
+        #     data=artifact.data
+        #     metadata= "hello"
+        # )
+        # self._dataset = dataset
+        # self._model = model
+        # self._input_features = input_features
+        # self._target_feature = target_feature
+        # self._metrics = metrics
+        # self._artifacts = {}
+        # self._split = split
 # if st.session_state.save_pipeline_clicked:
 #     if st.button(label="Save pipeline"):
 #         pipeline_name = st.text_input("Give your pipeline a name")
