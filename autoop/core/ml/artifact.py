@@ -7,7 +7,7 @@ import base64
 class Artifact(BaseModel):
     """Stores and contains information about different assets.
 
-    Attributes:
+    Args:
         name (str): The name of the asset
         version (str): The version of the asset
         asset_path (str): The asset path
@@ -26,7 +26,16 @@ class Artifact(BaseModel):
     type: str = Field(default="")
     id: str = Field(default="")
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
+        """
+        Constructor for the class Artifact.
+
+        Args:
+            **kwargs: multiple keywords for name, version, asset_path, tags, \
+                  metadata, data, type, and id.
+        Returns:
+            None
+        """
         super().__init__(**kwargs)
         self.id = f"{base64.b64encode(self.name.encode())}_{self.version}"
         self.id.replace("=", "_")
@@ -43,4 +52,5 @@ class Artifact(BaseModel):
         return self.data
 
     def save(self, bytes: bytes) -> bytes:
+        """Function to save the artifact"""
         pass
