@@ -153,32 +153,34 @@ If you did not implement the feature
 
 | Requirement                           | Type (FN/NF) | Implemented by       | Implementation Completed (add X if done) | Comment |
 |-------------------------------------- |--------------|----------------------|--------------------------|---------|         
-| Up-to-date requirements.txt           | NF           |Niek                  |    x     | |
-| `ML/detect-features`                  | FN           |Niek                  |    x     | |
-| `ML/artifact`                         | NF           |Niek                  |    x     | |
-| `ML/feature`                          | NF           |Daniël                |    x     | |
-| `ML/metric`                           | NF           |Daniël                |    x     | |
-| `ML/metric/extensions`                | FN           |Both                  |    x     | |
-| `ML/model`                            | NF           |Niek                  |    x     | |
-| `ML/model/extensions`                 | FN           |Both                  |    x     | |
-| `ML/pipeline/evaluation`              | FN           |Daniël                |    x     | | 
-| `ST/page/datasets`                    | NF           |Niek                  |    x     | |
-| `ST/datasets/management/create`       | FN           |Daniël                |    x     | |
-| `ST/datasets/management/save`         | FN           |Daniël                |    x     | |
-| `ST/page/modelling`                   | NF           |Niek                  |    x     | |
-| `ST/modelling/datasets/list`          | FN           |Daniël                |    x     | |
-| `ST/modelling/datasets/features`      | FN           |Niek                  |    x     | |
-| `ST/modelling/models`                 | FN           |Daniël                |    x     | |
-| `ST/modelling/pipeline/split`         | FN           |Niek                  |    x     | |
-| `ST/modelling/pipeline/metrics`       | FN           |Niek                  |    x     | |
-| `ST/modelling/pipeline/summary`       | FN           |Niek                  |    x     | |
-| `ST/modelling/pipeline/train`         | FN           |Niek                  |    x     | |
-| `ST/modelling/pipeline/save`          | FN           |Daniël                |    x     | |
-| `ST/page/deployment`                  | FN           |Daniël                |    x     | |
-| `ST/deployment/load`                  | FN           |Daniël                |    x     | |
-| `ST/deployment/predict`               | FN           |Daniël                |    x     | |
+| Up-to-date requirements.txt           | NF           |Niek                  |    X     | |
+| `ML/detect-features`                  | FN           |Niek                  |    X     | |
+| `ML/artifact`                         | NF           |Niek                  |    X     | |
+| `ML/feature`                          | NF           |Daniël                |    X     | |
+| `ML/metric`                           | NF           |Daniël                |    X     | |
+| `ML/metric/extensions`                | FN           |Both                  |    X     | |
+| `ML/model`                            | NF           |Niek                  |    X     | |
+| `ML/model/extensions`                 | FN           |Both                  |    X     | |
+| `ML/pipeline/evaluation`              | FN           |Daniël                |    X     | | 
+| `ST/page/datasets`                    | NF           |Niek                  |    X     | |
+| `ST/datasets/management/create`       | FN           |Daniël                |    X     | |
+| `ST/datasets/management/save`         | FN           |Daniël                |    X     | |
+| `ST/page/modelling`                   | NF           |Niek                  |    X     | |
+| `ST/modelling/datasets/list`          | FN           |Daniël                |    X     | |
+| `ST/modelling/datasets/features`      | FN           |Niek                  |    X     | |
+| `ST/modelling/models`                 | FN           |Daniël                |    X     | |
+| `ST/modelling/pipeline/split`         | FN           |Niek                  |    X     | |
+| `ST/modelling/pipeline/metrics`       | FN           |Niek                  |    X     | |
+| `ST/modelling/pipeline/summary`       | FN           |Niek                  |    X     | |
+| `ST/modelling/pipeline/train`         | FN           |Niek                  |    X     | |
+| `ST/modelling/pipeline/save`          | FN           |Daniël                |    X     | |
+| `ST/page/deployment`                  | FN           |Daniël                |    X     | |
+| `ST/deployment/load`                  | FN           |Daniël                |    X     | |
+| `ST/deployment/predict`               | FN           |Daniël                |    X     | |
 
 If you add extra features, please indicate them below:
 | Requirement                           | Type (FN/NF) | Implemented by       | Implementation Completed (add X if done) | Comment |
 |-------------------------------------- |--------------|----------------------|---------|-----|
-|           |            |                      |         | |
+| `ST/modelling/datasets/delete`        | FN           |   Daniël               |    X    | |
+| `ST/deployment/pipeline/delete`       | FN           |   Niek               |    X    | |
+| `html documentation`                                | FN           |   Both              |    X    | |
