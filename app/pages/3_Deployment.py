@@ -83,7 +83,7 @@ if name_selected_pipeline:
         st.markdown(f"""**Input Features**: {', '.join(names_input_features)
                     if pipeline._input_features else 'None'}"""
                     )
-        st.markdown(f"**Target**: {pipeline._target_feature.name}")
+        st.markdown(f"**Target Feature**: {pipeline._target_feature.name}")
 
     with col2:
         st.markdown(f"**Model**: {pipeline.model.__class__.__name__}")
@@ -133,9 +133,15 @@ if name_selected_pipeline:
                     pipeline._dataset = cur_dataset
                     pipeline_results = pipeline.execute()
                     metric_results = pipeline_results.get('metrics')
+                    train_metric_results = pipeline_results.get(
+                        'metric for training')
                     for metric in metric_results:
                         st.write(f"{metric[0].__class__.__name__}: \
                                  {metric[1]:.3f}")
+                    for metric in train_metric_results:
+                        st.write(f"Training Data: \
+                                {metric[0].__class__.__name__}: \
+                                {metric[1]:.3f}")
                     st.write(pipeline_results.get('predictions'))
                     st.session_state.save_pipeline_clicked = True
                     st.session_state.pipeline = pipeline
