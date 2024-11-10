@@ -55,16 +55,19 @@ else:
 
         cur_dataset = Dataset.from_artifact(
             datasets[datasets_names.index(name_cur_dataset)])
-        
+
         # ###FEATURE SELECTION###
 
         feature_list = detect_feature_types(cur_dataset)
 
-        input_features = st.multiselect(label="Choose the input features", options=feature_list)
+        input_features = st.multiselect(label="Choose the input features",
+                                        options=feature_list)
         input_feature_names = [feature.name for feature in input_features]
 
-        target_options = [option for option in feature_list if option.name not in input_feature_names]
-        target_feature = st.selectbox(label="Choose the target feature", options=target_options)
+        target_options = [option for option in feature_list
+                          if option.name not in input_feature_names]
+        target_feature = st.selectbox(label="Choose the target feature",
+                                      options=target_options)
 
         # ###MODEL & METRIC GENERATION###
 
@@ -79,14 +82,16 @@ else:
 
         # ###MODEL, SPLIT & METRIC SELECTION###
 
-        model_selection = st.selectbox(label="Choose the model you want to use:",
-                                    options=model_options)
+        model_selection = st.selectbox(
+                                    label="Choose the model you want to use:",
+                                    options=model_options
+                                    )
 
         model = get_model(model_selection)
 
         data_split = st.slider(label="Select a data split:", min_value=0.01,
-                            max_value=0.99, value=0.80)
-        
+                               max_value=0.99, value=0.80)
+
         selected_metrics = st.multiselect(label="Select the metrics you \
                                         want to use:", options=metric_options)
 
@@ -99,9 +104,9 @@ else:
             col1, col2 = st.columns(2)
             with col1:
                 st.markdown(f"**Dataset**: {name_cur_dataset}")
-                st.markdown(f"""**Input Features**: {', '.join(name_input_features)
-                            if input_features else 'None'}"""
-                            )
+                feature_text = ', '.join(name_input_features) \
+                    if input_features else 'None'
+                st.markdown(f"**Input Features**: {feature_text}")
                 st.markdown(f"**Target**: {target_feature}")
 
             with col2:
@@ -132,7 +137,8 @@ else:
 
                 pipeline_results = cur_pipeline.execute()
                 metric_results = pipeline_results.get('metrics')
-                train_metric_results = pipeline_results.get('metric for training')
+                train_metric_results = \
+                    pipeline_results.get('metric for training')
 
                 for metric in metric_results:
                     st.write(f"Test Data: \
@@ -149,7 +155,7 @@ else:
                 st.write("Save Pipeline: ")
                 pipeline_name = st.text_input("Give your pipeline a name")
                 pipeline_version = st.text_input("write down the "
-                                                "version of the pipeline")
+                                                 "version of the pipeline")
 
                 if pipeline_name and pipeline_version:
                     if st.button(label="Save pipeline"):
@@ -171,6 +177,7 @@ else:
                             data=data,
                             type='pipeline'
                         )
-                        pipeline_artifact._asset_path = f"./{pipeline_artifact.id}"
+                        pipeline_artifact._asset_path = \
+                            f"./{pipeline_artifact.id}"
                         automl.registry.register(pipeline_artifact)
                         st.success("Pipeline saved")

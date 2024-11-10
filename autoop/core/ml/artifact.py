@@ -89,7 +89,7 @@ class Artifact:
         Returns:
             The tags
         """
-        return self._tags
+        return deepcopy(self._tags)
 
     @property
     def metadata(self) -> dict:
@@ -98,9 +98,7 @@ class Artifact:
         Returns:
             The metadata
         """
-
-        # No deepcopy here, to allow the Artifact to be stored correctly
-        return self._metadata
+        return deepcopy(self._metadata)
 
     @property
     def id(self) -> str:
