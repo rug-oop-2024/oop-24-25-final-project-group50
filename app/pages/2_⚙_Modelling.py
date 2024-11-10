@@ -140,12 +140,12 @@ if name_cur_dataset and input_features and target_feature:
                 if st.button(label="Save pipeline"):
                     data = pickle.dumps(
                         {
-                         "dataset": name_cur_dataset,
-                         "model": model_selection,
-                         "input_features": input_features,
-                         "target_feature": target_feature,
-                         "metrics": selected_metrics,
-                         "split": data_split,
+                            "dataset": name_cur_dataset,
+                            "model": model_selection,
+                            "input_features": input_features,
+                            "target_feature": target_feature,
+                            "metrics": selected_metrics,
+                            "split": data_split,
                         }
                     )
 
