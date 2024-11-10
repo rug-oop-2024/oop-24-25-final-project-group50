@@ -193,15 +193,15 @@ class CohensKappa(Metric):
                              index_map[prediction]] += 1
 
         num_samples = np.sum(confusion_matrix)
-        observed_agreement = np.trace(confusion_matrix) / num_samples
+        obs_agreement = np.trace(confusion_matrix) / num_samples
 
         row_sum = np.sum(confusion_matrix, axis=1)
         column_sum = np.sum(confusion_matrix, axis=0)
-        expected_agreement = np.sum((row_sum * column_sum) / num_samples**2)
+        exp_agreement = np.sum((row_sum * column_sum) / num_samples**2)
         # print(observed_agreement, expected_agreement)
 
         return (
-          (observed_agreement - expected_agreement) / (1 - expected_agreement)
+                (obs_agreement - exp_agreement) / (1 - exp_agreement)
         )
 
 

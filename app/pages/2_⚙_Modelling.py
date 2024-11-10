@@ -87,8 +87,8 @@ if name_cur_dataset and input_features and target_feature:
         col1, col2 = st.columns(2)
         with col1:
             st.markdown(f"**Dataset**: {name_cur_dataset}")
-            st.markdown(f"**Input Features**: {', '.join(names_input_features)
-                                               if input_features else 'None'}"
+            st.markdown(f"""**Input Features**: {', '.join(names_input_features)
+                        if input_features else 'None'}"""
                         )
             st.markdown(f"**Target**: {target_feature}")
 
