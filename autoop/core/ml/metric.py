@@ -200,9 +200,7 @@ class CohensKappa(Metric):
         exp_agreement = np.sum((row_sum * column_sum) / num_samples**2)
         # print(observed_agreement, expected_agreement)
 
-        return (
-                (obs_agreement - exp_agreement) / (1 - exp_agreement)
-        )
+        return (obs_agreement - exp_agreement) / (1 - exp_agreement)
 
 
 class RSquaredScore(Metric):

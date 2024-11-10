@@ -12,7 +12,7 @@ from autoop.core.ml.metric import get_metric, Metric
 from autoop.core.ml.feature import Feature
 
 
-def get_all_metrics(metric_name_list: list) -> list['Metric']:
+def _get_all_metrics(metric_name_list: list) -> list['Metric']:
     """
     Function to get all the instances of the metric names into a list.
 
@@ -24,7 +24,7 @@ def get_all_metrics(metric_name_list: list) -> list['Metric']:
     return [get_metric(metric) for metric in metric_name_list]
 
 
-def artifact_to_pipeline(artifact: Artifact) -> "Pipeline":
+def _artifact_to_pipeline(artifact: Artifact) -> "Pipeline":
     """
     Making a pipeline given an artifact pipeline.
 
@@ -39,13 +39,13 @@ def artifact_to_pipeline(artifact: Artifact) -> "Pipeline":
         input_features=pipeline_dict.get("input_features"),
         target_feature=pipeline_dict.get("target_feature"),
         split=pipeline_dict.get("split"),
-        metrics=get_all_metrics(pipeline_dict.get("metrics")),
+        metrics=_get_all_metrics(pipeline_dict.get("metrics")),
         dataset=None
     )
 
 
-def features_in_feature_list(pipeline: Pipeline,
-                             feature_list: list[Feature]) -> bool:
+def _features_in_feature_list(pipeline: Pipeline,
+                              feature_list: list[Feature]) -> bool:
     """
     Checks if the target and input features of pipeline are also in the dataset
 
@@ -72,7 +72,7 @@ name_selected_pipeline = st.selectbox("Choose your saved pipeline",
 if name_selected_pipeline:
     selected_pipeline = (pipeline_list[
         names_pipeline_list.index(name_selected_pipeline)])
-    pipeline = artifact_to_pipeline(selected_pipeline)
+    pipeline = _artifact_to_pipeline(selected_pipeline)
     names_input_features = [feature.name for feature
                             in pipeline._input_features]
     metric_name_list = [metric.__class__.__name__ for
@@ -83,7 +83,7 @@ if name_selected_pipeline:
         st.markdown(f"""**Input Features**: {', '.join(names_input_features)
                     if pipeline._input_features else 'None'}"""
                     )
-        st.markdown(f"**Target**: {pipeline._target_feature.name}")
+        st.markdown(f"**Target Feature**: {pipeline._target_feature.name}")
 
     with col2:
         st.markdown(f"**Model**: {pipeline.model.__class__.__name__}")
@@ -122,7 +122,7 @@ if name_selected_pipeline:
         cur_dataset = Dataset.from_artifact(datasets[
             datasets_names.index(name_cur_dataset)])
         features_cur_file = detect_feature_types(cur_dataset)
-        if not features_in_feature_list(pipeline, features_cur_file):
+        if not _features_in_feature_list(pipeline, features_cur_file):
             st.warning(f"File {cur_dataset.name} does not have all the target \
                        or input features! Please choose another file.")
         else:
@@ -133,9 +133,15 @@ if name_selected_pipeline:
                     pipeline._dataset = cur_dataset
                     pipeline_results = pipeline.execute()
                     metric_results = pipeline_results.get('metrics')
+                    train_metric_results = pipeline_results.get(
+                        'metric for training')
                     for metric in metric_results:
                         st.write(f"{metric[0].__class__.__name__}: \
                                  {metric[1]:.3f}")
+                    for metric in train_metric_results:
+                        st.write(f"Training Data: \
+                                {metric[0].__class__.__name__}: \
+                                {metric[1]:.3f}")
                     st.write(pipeline_results.get('predictions'))
                     st.session_state.save_pipeline_clicked = True
                     st.session_state.pipeline = pipeline
