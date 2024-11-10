@@ -1,6 +1,6 @@
 import numpy as np
 from pydantic import PrivateAttr
-from sklearn.linear_model import ElasticNet as En
+from sklearn.linear_model import ElasticNetCV as En
 
 from autoop.core.ml.model import Model
 
@@ -34,8 +34,7 @@ class ElasticNet(Model):
             None
         """
         self._en.fit(observations, ground_truth)
-        self._parameters["coef"] = self._en.coef_
-        self._parameters["intercept"] = self._en.intercept_
+        self._parameters['parameters'] = self._en.get_params()
 
     def predict(self, observations: np.ndarray) -> np.ndarray:
         """

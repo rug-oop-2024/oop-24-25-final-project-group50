@@ -1,13 +1,4 @@
 
-# from abc import abstractmethod
-# from autoop.core.ml.artifact import Artifact
-# import numpy as np
-# from copy import deepcopy
-# from typing import Literal
-
-# class Model:
-#     pass  # your code (attribute and methods) here
-
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from autoop.core.ml.artifact import Artifact
@@ -15,20 +6,6 @@ from autoop.core.ml.artifact import Artifact
 import numpy as np
 from pydantic import BaseModel, PrivateAttr
 import pickle
-
-"""
-Model still needs:
-    type attribute
-    to_artifact method
-
-
-Implemented models:
-    MultipleLinearRegression - regression
-    KNN - classification
-    Lasso - regression
-    Random Forests - classification
-    Elastic Net - regression
-"""
 
 
 class Model(ABC, BaseModel):

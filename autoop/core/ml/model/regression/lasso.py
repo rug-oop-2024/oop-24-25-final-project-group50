@@ -34,8 +34,7 @@ class LassoCV(Model):
             None
         """
         self._ls.fit(observations, ground_truth)
-        self._parameters["coef"] = self._ls.coef_
-        self._parameters["intercept"] = self._ls.intercept_
+        self._parameters['parameters'] = self._ls.get_params()
 
     def predict(self, observations: np.ndarray) -> np.ndarray:
         """

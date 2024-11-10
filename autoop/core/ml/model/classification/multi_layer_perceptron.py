@@ -33,7 +33,7 @@ class MultiLayerPerceptron(Model):
             None
         """
         self._mlp.fit(observations, ground_truth)
-        self._parameters = self._mlp.get_params()
+        self._parameters['parameters'] = self._mlp.get_params()
 
     def predict(self, observations: np.ndarray) -> np.ndarray:
         """

@@ -12,12 +12,6 @@ def detect_feature_types(dataset: Dataset) -> List[Feature]:
     Returns:
         List[Feature]: List of features with their types.
     """
-
-    # asset_path = dataset.asset_path
-    # with open(f"assets/objects/{dataset.asset_path}", 'rb') as file:
-    #     df_data = pd.read_csv(file)
-    # data_str = data.decode("utf-8")
-    # df_data = pd.read_csv(StringIO(data_str))
     data = dataset.read()
     feature_list = []
     for feature in data.columns:

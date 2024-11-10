@@ -26,8 +26,6 @@ def get_metric(name: str) -> "Metric":
             return MeanSquaredError()
         case "Accuracy":
             return Accuracy()
-        case "log_loss":
-            return LogLoss()
         case "Mean Absolute Percentage Error":
             return MeanAbsolutePercentageError()
         case "Cohens Kappa":
@@ -57,12 +55,6 @@ class Metric(ABC):
             a float with the calculation of the chosen metric.
         """
         return self.evaluate(predicted_truths, ground_truths)
-
-    # def predictions_for_regression(observations, model_parameters):
-    #     pass
-
-    # def predictions_for_classification(observations, model_parameters):
-    #     pass
 
     @abstractmethod
     def evaluate(self, predicted_truths: np.ndarray,
@@ -117,24 +109,6 @@ class MeanSquaredError(Metric):
         return 1 / len(actual_truth) * total_result
 
 
-class LogLoss(Metric):
-    """Class for the calculation of the logloss"""
-    def metric_function(self, predicted_truths: np.ndarray,
-                        actual_truths: np.ndarray) -> float:
-        """
-        The code assumes that predicted_truths consists of an array with \
-              chances which are added up together 1
-        E.g. [0.1, 0.2, 0.6, 0.1]
-        The code assumes that actual_truths consists of an array \
-              with a 0 or 1, indicating the right classification.
-        E.g. [0, 0, 1, 0]
-        """
-        multiplied_arrays = np.multiply(predicted_truths, actual_truths)
-        filtered_array = multiplied_arrays[multiplied_arrays != 0]
-        log_list = - np.log(filtered_array)
-        return 1 / len(log_list) * np.sum(log_list)
-
-
 class MeanAbsolutePercentageError(Metric):
     """Class for the calculation of the mean absolute percentage error"""
     def evaluate(self, predicted_truths: np.ndarray,
@@ -171,13 +145,10 @@ class CohensKappa(Metric):
             The closer to 1, the better.
         """
         # Convert one-hot encoded arrays to single labels
-        # print(actual_truth)
-        if predicted_truth.ndim > 1:  # Check if prediction is one-hot encoded
-            predicted_truth = np.argmax(predicted_truth,
-                                        axis=1)  # Flatten to single labels
-        if actual_truth.ndim > 1:  # Check if actual truth is one-hot encoded
-            actual_truth = np.argmax(actual_truth,
-                                     axis=1)  # Flatten to single labels
+        if predicted_truth.ndim > 1:
+            predicted_truth = np.argmax(predicted_truth, axis=1)
+        if actual_truth.ndim > 1:
+            actual_truth = np.argmax(actual_truth, axis=1)
 
         unique_labels = np.unique(np.concatenate((actual_truth,
                                                   predicted_truth)))
@@ -188,7 +159,6 @@ class CohensKappa(Metric):
         confusion_matrix = np.zeros((label_num, label_num), dtype=int)
 
         for truth, prediction in zip(actual_truth, predicted_truth):
-            # truth, prediction = int(truth), int(prediction)
             confusion_matrix[index_map[truth],
                              index_map[prediction]] += 1
 
@@ -198,7 +168,6 @@ class CohensKappa(Metric):
         row_sum = np.sum(confusion_matrix, axis=1)
         column_sum = np.sum(confusion_matrix, axis=0)
         exp_agreement = np.sum((row_sum * column_sum) / num_samples**2)
-        # print(observed_agreement, expected_agreement)
 
         return (obs_agreement - exp_agreement) / (1 - exp_agreement)
 
@@ -230,23 +199,21 @@ class RSquaredScore(Metric):
 class Precision(Metric):
     """Class which computes the precision"""
     def evaluate(self, predicted_truth: np.ndarray,
-                 actual_truth: np.ndarray) -> dict:
+                 actual_truth: np.ndarray) -> float:
         """
-        Metric function that calculates the precision per category given.
+        Metric function that calculates the macro averaged precision.
 
         Args:
             predicted_truth: the predicted truths made by the model
             actual_truth: the ground truth given in the database
         Returns:
-            A dictionary with the precision of each category.
+            The macro averaged precision.
         """
         # Convert one-hot encoded arrays to single labels
-        if predicted_truth.ndim > 1:  # Check if prediction is one-hot encoded
-            predicted_truth = np.argmax(predicted_truth,
-                                        axis=1)  # Flatten to single labels
-        if actual_truth.ndim > 1:  # Check if actual truth is one-hot encoded
-            actual_truth = np.argmax(actual_truth,
-                                     axis=1)  # Flatten to single labels
+        if predicted_truth.ndim > 1:
+            predicted_truth = np.argmax(predicted_truth, axis=1)
+        if actual_truth.ndim > 1:
+            actual_truth = np.argmax(actual_truth, axis=1)
 
         precision_dict = []
         unique_labels = np.unique(actual_truth)

@@ -33,7 +33,7 @@ class RandomForestClassifier(Model):
             None
         """
         self._rfs.fit(observations, ground_truth)
-        self._parameters = self._rfs.get_params()
+        self._parameters['parameters'] = self._rfs.get_params()
 
     def predict(self, observations: np.ndarray) -> np.ndarray:
         """

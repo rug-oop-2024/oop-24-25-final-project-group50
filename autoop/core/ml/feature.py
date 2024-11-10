@@ -1,11 +1,37 @@
 
-from pydantic import BaseModel, Field
+class Feature:
+    """A class for Feature"""
 
+    def __init__(self, name: str = "", type: str = "") -> None:
+        """
+        Constructor for the class Feature.
 
-class Feature(BaseModel):
-    """A description"""
-    name: str = Field(default="")
-    type: str = Field(default="")
+        Args:
+            name (str): The name of the feature
+            type (str): The type of the feature
+        Returns:
+            None
+        """
+        self._name = name
+        self._type = type
+
+    @property
+    def name(self) -> str:
+        """Get name attribute
+
+        Returns:
+            The name
+        """
+        return self._name
+
+    @property
+    def type(self) -> str:
+        """Get type attribute
+
+        Returns:
+            The type
+        """
+        return self._type
 
     def __str__(self) -> str:
         """
