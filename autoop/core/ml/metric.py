@@ -135,8 +135,8 @@ class MeanAbsolutePercentageError(Metric):
             The average degree to which the predicted value differs from the
             actual value expressed in percentages
         """
-        sum_part = (np.sum(abs(
-            actual_truths - predicted_truths) / actual_truths))
+        percentage_error = (actual_truths - predicted_truths) / actual_truths
+        sum_part = np.sum(np.absolute(percentage_error))
         return sum_part / len(predicted_truths)
 
 
