@@ -70,13 +70,13 @@ else:
                                       options=target_options)
 
         # ###MODEL & METRIC GENERATION###
-
-        if target_feature.type == "categorical":
-            model_options = CLASSIFICATION_MODELS
-            metric_options = CLASSIFICATION_METRICS
-        else:
-            model_options = REGRESSION_MODELS
-            metric_options = REGRESSION_METRICS
+        if target_feature:
+            if target_feature.type == "categorical":
+                model_options = CLASSIFICATION_MODELS
+                metric_options = CLASSIFICATION_METRICS
+            else:
+                model_options = REGRESSION_MODELS
+                metric_options = REGRESSION_METRICS
 
     if name_cur_dataset and input_features and target_feature:
 

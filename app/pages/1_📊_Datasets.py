@@ -9,6 +9,8 @@ from autoop.core.ml.dataset import Dataset
 
 st.set_page_config(page_title="Datasets", page_icon="📊")
 
+st.write("# 📊 Datasets")
+
 automl = AutoMLSystem.get_instance()
 
 # ###DATASET UPLOADING###

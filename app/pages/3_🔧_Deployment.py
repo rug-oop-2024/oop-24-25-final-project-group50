@@ -70,6 +70,8 @@ def _features_in_feature_list(pipeline: Pipeline,
 
 st.set_page_config(page_title="Deployment", page_icon="🔧")
 
+st.write("# 🔧 Deployment")
+
 automl = AutoMLSystem.get_instance()
 
 # ###DATASET DISPLAY & DELETING###
