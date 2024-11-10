@@ -1,57 +1,26 @@
 import streamlit as st
 import pickle
-import io
-
-from typing import Any
-from autoop.core.ml.model.model import Model
 from app.core.system import AutoMLSystem
 from autoop.core.ml.dataset import Dataset
-from autoop.core.ml.model.regression import MultipleLinearRegression
-from autoop.core.ml.model.regression.lasso import LassoCV
-from autoop.core.ml.model.regression.elastic_net import ElasticNet
-from autoop.core.ml.model.classification.k_nearest_neighbours  \
-    import KNearestNeighbors
-from autoop.core.ml.model.classification.multi_layer_perceptron \
-      import MultiLayerPerceptron
-from autoop.core.ml.model.classification.random_forest_classifier \
-      import RandomForestClassifier
 from autoop.core.ml.pipeline import Pipeline
 from autoop.core.ml.artifact import Artifact
-from autoop.core.ml.feature import Feature
 from autoop.functional.feature import detect_feature_types
 from autoop.core.ml.metric import get_metric
-
-
-def get_model(model_name: str) -> 'Model':
-    """Factory function to get a model by name."""
-    match model_name:
-        case "Multiple Linear Regression":
-            return MultipleLinearRegression()
-        case "Elastic Net":
-            return ElasticNet()
-        case "Lasso":
-            return LassoCV()
-        case "K Nearest Neighbors":
-            return KNearestNeighbors()
-        case "Random ForestClassifier":
-            return RandomForestClassifier()
-        case "Multi Layer Perceptron":
-            return MultiLayerPerceptron()
-
-# METRICS = [
-#     "mean_squared_error",
-#     "accuracy",
-#     "mean_absolute_percentage_error",
-#     "cohens_kappa",
-#     "r_squared_score",
-#     "precision"
-# ]
+from autoop.core.ml.model import get_model
 
 
 st.set_page_config(page_title="Modelling", page_icon="📈")
 
 
 def write_helper_text(text: str):
+    """
+    Function to write text in Streamlit in a formatted way.
+
+    Args:
+        text: the text to be written in Streamit
+    Returns:
+        None
+    """
     st.write(f"<p style=\"color: #888;\">{text}</p>", unsafe_allow_html=True)
 
 
@@ -145,16 +114,7 @@ if name_cur_dataset and input_features and target_feature:
                 target_feature=target_feature,
                 split=data_split
             )
-            # st.write(new_pipeline.execute())
 
-    # new_pipeline = Pipeline(
-    #     metrics=[get_metric("r_squared_score")],
-    #     dataset=cur_dataset,
-    #     model=MultipleLinearRegression(),
-    #     input_features=feature_list[:-1],
-    #     target_feature=feature_list[-1],
-    #     split=0.8
-    # )
 # Pipeline results here
             pipeline_results = cur_pipeline.execute()
             metric_results = pipeline_results.get('metrics')
@@ -189,112 +149,3 @@ if name_cur_dataset and input_features and target_feature:
                         )
                     pipeline_artifact.asset_path = f"./{pipeline_artifact.id}"
                     automl.registry.register(pipeline_artifact)
-
-
-                    # pipeline_list = automl.registry.list(type="pipeline")
-                    # names_pipeline_list = [pipeline.name for pipeline in pipeline_list]
-                    # name_selected_pipeline = st.selectbox("Choose your saved pipeline", options=names_pipeline_list)
-
-
-                    # def artifact_to_pipeline(artifact: Artifact) -> "Pipeline":
-                    #     pipeline_dict = pickle.loads(artifact)
-                    #     return Pipeline(
-                    #         dataset=pipeline_dict.get("dataset"),
-                    #         model=pipeline_dict.get("model"),
-                    #         input_features=pipeline_dict.get("input_features"),
-                    #         target_feature=pipeline_dict.get("target_feature"),
-                    #         split=pipeline_dict.get("split")
-                    #     )
-
-                    # selected_pipeline = (pipeline_list[names_pipeline_list.index(name_selected_pipeline)])
-                    # new_pipeline = artifact_to_pipeline(selected_pipeline)
-
-                    # cur_pipeline = st.session_state.cur_pipeline
-                    # pipeline_artifacts = cur_pipeline.artifacts
-
-                    # saved_pipeline = Artifact(
-                    #     name=pipeline_name,
-                    #     version=pipeline_version,
-                    #     asset_path="./assets",
-                    #     type="pipeline",
-                    #     data=pickle.dumps("test")
-                    # )
-                    # for artifact in pipeline_artifacts:
-                    #     print("artifact", artifact)
-                    #     saved_pipeline.metadata[artifact.name] = artifact.id
-                    #     artifact.asset_path = f"./{artifact.id}"
-                    #     print(artifact)
-                    #     automl.registry.register(artifact)
-
-                    # saved_pipeline.asset_path = f"./{saved_pipeline.id}"
-                    # automl.registry.register(saved_pipeline)
-                    # st.success("Pipeline saved")
-
-                    # def read_pickle_data(path):
-                    #     data_bytes = automl._storage.load(path)
-                    #     with io.BytesIO(data_bytes) as file:
-                    #         data = pickle.load(file)
-                    #     return data
-                    
-                    # pipeline_list = automl.registry.list(type="pipeline")
-                    # names_pipeline_list = [pipeline.name for pipeline in pipeline_list]
-                    # data_pipeline_list = [pipeline.metadata for pipeline in pipeline_list]
-                    # # print(names_pipeline_list)
-                    # # print(data_pipeline_list)
-                    # name_cur_pipeline = st.selectbox(label="Select the pipeline you \
-                    #                 want to use", options=names_pipeline_list)
-
-                    # current_pipeline = pipeline_list[names_pipeline_list.index(name_cur_pipeline)]
-
-                    # config_path = current_pipeline.metadata.get("pipeline_config")
-                    # pipeline_model = current_pipeline.metadata.get("pipeline_model_classification", "pipeline_model_regression")
-                    # radius = current_pipeline.metadata.get("yield")
-
-                    # print("-"*70)
-                    # print(read_pickle_data(radius))
-                    # print(read_pickle_data(pipeline_model))
-                    # print("-"*70)
-
-                    # pipeline_config = read_pickle_data(config_path)
-                    # input_features = pipeline_config.get('input_features')
-                    # target_feature = pipeline_config.get("target_feature")
-                    # split = pipeline_config.get("split")
-
-
-        # return Pipeline(
-        #     name=artifact.name,
-        #     version=artifact.version,
-        #     asset_path=artifact.asset_path,
-        #     tags=artifact.tags,
-        #     data=artifact.data
-        #     metadata= "hello"
-        # )
-        # self._dataset = dataset
-        # self._model = model
-        # self._input_features = input_features
-        # self._target_feature = target_feature
-        # self._metrics = metrics
-        # self._artifacts = {}
-        # self._split = split
-# if st.session_state.save_pipeline_clicked:
-#     if st.button(label="Save pipeline"):
-#         pipeline_name = st.text_input("Give your pipeline a name")
-#         pipeline_version = st.text_input("write down the
-#                                         version of the pipeline")
-
-#         if pipeline_name and pipeline_version:
-#             cur_pipeline = st.session_state.cur_pipeline
-#             pipeline_artifacts = cur_pipeline.artifacts
-
-#             saved_pipeline = Artifact(
-#                 name=pipeline_name,
-#                 version=pipeline_version,
-#                 asset_path="./assets",
-#                 type="pipeline"
-#             )
-#             for artifact in pipeline_artifacts:
-#                 saved_pipeline.metadata[artifact.name] = artifact.id
-#                 automl.registry.register(artifact)
-#             automl.registry.register(saved_pipeline)
-#             st.success("Pipeline saved")
-

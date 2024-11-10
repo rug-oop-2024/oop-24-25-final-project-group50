@@ -6,7 +6,7 @@ from glob import glob
 
 class NotFoundError(Exception):
     """NotFoundError class"""
-    def __init__(self, path) -> None:
+    def __init__(self, path: str) -> None:
         """
         Constructor for NotFoundError class
 

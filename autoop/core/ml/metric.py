@@ -132,7 +132,7 @@ class LogLoss(Metric):
         multiplied_arrays = np.multiply(predicted_truths, actual_truths)
         filtered_array = multiplied_arrays[multiplied_arrays != 0]
         log_list = - np.log(filtered_array)
-        return 1/len(log_list) * np.sum(log_list)
+        return 1 / len(log_list) * np.sum(log_list)
 
 
 class MeanAbsolutePercentageError(Metric):
@@ -149,8 +149,8 @@ class MeanAbsolutePercentageError(Metric):
             The average degree to which the predicted value differs from the
             actual value expressed in percentages
         """
-        sum_part = (np.sum(abs(actual_truths - predicted_truths)
-                    / actual_truths))
+        sum_part = (np.sum(abs(
+            actual_truths - predicted_truths) / actual_truths))
         return sum_part / len(predicted_truths)
 
 
@@ -201,9 +201,8 @@ class CohensKappa(Metric):
         # print(observed_agreement, expected_agreement)
 
         return (
-            (observed_agreement - expected_agreement)
-            / (1 - expected_agreement)
-                )
+          (observed_agreement - expected_agreement) / (1 - expected_agreement)
+        )
 
 
 class RSquaredScore(Metric):
