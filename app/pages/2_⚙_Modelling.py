@@ -12,7 +12,7 @@ from autoop.core.ml.model import get_model
 st.set_page_config(page_title="Modelling", page_icon="📈")
 
 
-def write_helper_text(text: str):
+def write_helper_text(text: str) -> None:
     """
     Function to write text in Streamlit in a formatted way.
 
@@ -82,12 +82,12 @@ if name_cur_dataset and input_features and target_feature:
                                        want to use:", options=metric_options)
 # Summary here
     if selected_metrics:
-        names_input_features = [feature.name for feature in input_features]
+        name_input_features = [feature.name for feature in input_features]
         st.subheader("Pipeline Summary")
         col1, col2 = st.columns(2)
         with col1:
             st.markdown(f"**Dataset**: {name_cur_dataset}")
-            st.markdown(f"""**Input Features**: {', '.join(names_input_features)
+            st.markdown(f"""**Input Features**: {', '.join(name_input_features)
                         if input_features else 'None'}"""
                         )
             st.markdown(f"**Target**: {target_feature}")
@@ -118,16 +118,23 @@ if name_cur_dataset and input_features and target_feature:
 # Pipeline results here
             pipeline_results = cur_pipeline.execute()
             metric_results = pipeline_results.get('metrics')
+            train_metric_results = pipeline_results.get('metric for training')
+
             for metric in metric_results:
-                st.write(f"{metric[0].__class__.__name__}: {metric[1]:.3f}")
+                st.write(f"Test Data: \
+                         {metric[0].__class__.__name__}: {metric[1]:.3f}")
+            for metric in train_metric_results:
+                st.write(f"Training Data: \
+                         {metric[0].__class__.__name__}: {metric[1]:.3f}")
+
             st.write(pipeline_results.get('predictions'))
             st.session_state.save_pipeline_clicked = True
             st.session_state.cur_pipeline = cur_pipeline
 
             st.write("Save Pipeline: ")
             pipeline_name = st.text_input("Give your pipeline a name")
-            pipeline_version = st.text_input("write down the \
-                                             version of the pipeline")
+            pipeline_version = st.text_input("write down the" +
+                                             "version of the pipeline")
 
             if pipeline_name and pipeline_version:
                 if st.button(label="Save pipeline"):
@@ -146,6 +153,6 @@ if name_cur_dataset and input_features and target_feature:
                         asset_path="./assets",
                         data=data,
                         type='pipeline'
-                        )
+                                                 )
                     pipeline_artifact.asset_path = f"./{pipeline_artifact.id}"
                     automl.registry.register(pipeline_artifact)

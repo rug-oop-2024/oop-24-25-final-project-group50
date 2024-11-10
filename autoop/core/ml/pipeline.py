@@ -45,9 +45,9 @@ class Pipeline():
         self._artifacts = {}
         self._split = split
         if (
-            target_feature.type == "categorical"
-            and (model.type != "classification")
-             ):
+            target_feature.type == "categorical" and (
+                model.type != "classification")
+        ):
             raise ValueError("Model type must be classification \
                               for categorical target feature")
         if target_feature.type == "continuous" and model.type != "regression":
