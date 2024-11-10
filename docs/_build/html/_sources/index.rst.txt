@@ -16,7 +16,8 @@ documentation for details.
    :caption: Contents:
 
    modules
-   genindex
-   modindex
-   search
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 

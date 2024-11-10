@@ -9,7 +9,7 @@
 import sys
 import os
 
-sys.path.insert(0, os.path.abspath("../autoop"))
+sys.path.insert(0, os.path.abspath("../"))
 
 project = 'AutoML'
 copyright = '2024, Niek Schepers & Daniël Prins'

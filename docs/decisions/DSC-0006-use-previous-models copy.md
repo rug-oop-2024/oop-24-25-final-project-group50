@@ -1,8 +1,8 @@
-# DSC-0005: Use mape
-# Date: 20-10-2024
-# Decision: Use Mean Absolute Percentage Error
+# DSC-0006: Use previous models
+# Date: 22-10-2024
+# Decision: Use previous models from assignment 1
 # Status: Accepted
-# Motivation: Useful metric for regression
-# Reason: Mean Absolute Percentage Error is easily interpretable
-# Limitations: Sensitive to small non-scaled values
-# Alternatives: Mean Absolute Error
+# Motivation: Previous models are working
+# Reason: The models from assignment 1 are widely-used and easy to understand
+# Limitations: Created with specific implementation
+# Alternatives: Wrappers for sklearn models

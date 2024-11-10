@@ -1,4 +1,4 @@
-# DSC-0001: Use Cohens Kappa
+# DSC-0002: Use Cohens Kappa
 # Date: 18-10-2024
 # Decision: Use Cohens Kappa metric
 # Status: Accepted

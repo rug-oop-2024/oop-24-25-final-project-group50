@@ -6,9 +6,7 @@
 AutoML documentation
 ====================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+Documentation for our Final Project
 
 
 .. toctree::
@@ -16,7 +14,8 @@ documentation for details.
    :caption: Contents:
 
    modules
-   genindex
-   modindex
-   search
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 
