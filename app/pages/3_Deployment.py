@@ -12,7 +12,7 @@ from autoop.core.ml.metric import get_metric, Metric
 from autoop.core.ml.feature import Feature
 
 
-def get_all_metrics(metric_name_list: list) -> list['Metric']:
+def _get_all_metrics(metric_name_list: list) -> list['Metric']:
     """
     Function to get all the instances of the metric names into a list.
 
@@ -24,7 +24,7 @@ def get_all_metrics(metric_name_list: list) -> list['Metric']:
     return [get_metric(metric) for metric in metric_name_list]
 
 
-def artifact_to_pipeline(artifact: Artifact) -> "Pipeline":
+def _artifact_to_pipeline(artifact: Artifact) -> "Pipeline":
     """
     Making a pipeline given an artifact pipeline.
 
@@ -39,13 +39,13 @@ def artifact_to_pipeline(artifact: Artifact) -> "Pipeline":
         input_features=pipeline_dict.get("input_features"),
         target_feature=pipeline_dict.get("target_feature"),
         split=pipeline_dict.get("split"),
-        metrics=get_all_metrics(pipeline_dict.get("metrics")),
+        metrics=_get_all_metrics(pipeline_dict.get("metrics")),
         dataset=None
     )
 
 
-def features_in_feature_list(pipeline: Pipeline,
-                             feature_list: list[Feature]) -> bool:
+def _features_in_feature_list(pipeline: Pipeline,
+                              feature_list: list[Feature]) -> bool:
     """
     Checks if the target and input features of pipeline are also in the dataset
 
@@ -72,7 +72,7 @@ name_selected_pipeline = st.selectbox("Choose your saved pipeline",
 if name_selected_pipeline:
     selected_pipeline = (pipeline_list[
         names_pipeline_list.index(name_selected_pipeline)])
-    pipeline = artifact_to_pipeline(selected_pipeline)
+    pipeline = _artifact_to_pipeline(selected_pipeline)
     names_input_features = [feature.name for feature
                             in pipeline._input_features]
     metric_name_list = [metric.__class__.__name__ for
@@ -122,7 +122,7 @@ if name_selected_pipeline:
         cur_dataset = Dataset.from_artifact(datasets[
             datasets_names.index(name_cur_dataset)])
         features_cur_file = detect_feature_types(cur_dataset)
-        if not features_in_feature_list(pipeline, features_cur_file):
+        if not _features_in_feature_list(pipeline, features_cur_file):
             st.warning(f"File {cur_dataset.name} does not have all the target \
                        or input features! Please choose another file.")
         else:

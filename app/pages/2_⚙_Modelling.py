@@ -12,7 +12,7 @@ from autoop.core.ml.model import get_model
 st.set_page_config(page_title="Modelling", page_icon="📈")
 
 
-def write_helper_text(text: str) -> None:
+def _write_helper_text(text: str) -> None:
     """
     Function to write text in Streamlit in a formatted way.
 
@@ -25,7 +25,7 @@ def write_helper_text(text: str) -> None:
 
 
 st.write("# ⚙ Modelling")
-write_helper_text("In this section, you can design a machine learning \
+_write_helper_text("In this section, you can design a machine learning \
                   pipeline to train a model on a dataset.")
 
 if "model_trained" not in st.session_state:
@@ -133,19 +133,21 @@ if name_cur_dataset and input_features and target_feature:
 
             st.write("Save Pipeline: ")
             pipeline_name = st.text_input("Give your pipeline a name")
-            pipeline_version = st.text_input("write down the" +
+            pipeline_version = st.text_input("write down the "
                                              "version of the pipeline")
 
             if pipeline_name and pipeline_version:
                 if st.button(label="Save pipeline"):
-                    data = pickle.dumps({
-                     "dataset": name_cur_dataset,
-                     "model": model_selection,
-                     "input_features": input_features,
-                     "target_feature": target_feature,
-                     "metrics": selected_metrics,
-                     "split": data_split,
-                    })
+                    data = pickle.dumps(
+                        {
+                         "dataset": name_cur_dataset,
+                         "model": model_selection,
+                         "input_features": input_features,
+                         "target_feature": target_feature,
+                         "metrics": selected_metrics,
+                         "split": data_split,
+                        }
+                    )
 
                     pipeline_artifact = Artifact(
                         name=pipeline_name,
