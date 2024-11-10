@@ -4,6 +4,5 @@
 # Status: Accepted
 # Motivation: No strict typing in Python
 # Reason: Pydantic can enforce strict typing and encapsulation 
-# Limitations: Certain types like nparrays do not work as PrivateAttr without
-# a config dict
+# Limitations: Certain types like nparrays do not work as PrivateAttr without a config dict
 # Alternatives: marshmallow
