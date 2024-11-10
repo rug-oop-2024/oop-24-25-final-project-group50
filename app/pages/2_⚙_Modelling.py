@@ -83,8 +83,8 @@ else:
         # ###MODEL, SPLIT & METRIC SELECTION###
 
         model_selection = st.selectbox(
-                                label="Choose the model you want to use:",
-                                options=model_options)
+                            label="Choose the model you want to use:",
+                            options=model_options)
 
         model = get_model(model_selection)
 
