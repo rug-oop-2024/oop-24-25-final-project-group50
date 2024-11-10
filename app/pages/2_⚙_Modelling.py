@@ -155,6 +155,6 @@ if name_cur_dataset and input_features and target_feature:
                         asset_path="./assets",
                         data=data,
                         type='pipeline'
-                                                 )
+                    )
                     pipeline_artifact.asset_path = f"./{pipeline_artifact.id}"
                     automl.registry.register(pipeline_artifact)
