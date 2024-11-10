@@ -8,10 +8,19 @@ METRICS = [
     "Cohens Kappa",
     "R-squared score",
     "Precision"
-]  # add the names (in strings) of the metrics you implement
+]
 
 
 def get_metric(name: str) -> "Metric":
+    """
+    Function to get a metric instance based on the metric name.
+
+    Args:
+        name: the name of the metric
+
+    Returns:
+        The metric instance corresponding the metric name
+    """
     match name:
         case "Mean Squared Error":
             return MeanSquaredError()
@@ -58,12 +67,23 @@ class Metric(ABC):
     @abstractmethod
     def evaluate(self, predicted_truths: np.ndarray,
                  actual_truths: np.ndarray) -> float:
+        """
+        Abstract method to evaluate data using metrics.
+
+        Args:
+        predicted_truth: the ground truth predicted by the model
+        actual_truth: the ground truth given in the database
+
+        Returns:
+            A float of the result
+        """
         pass
 
 
 class Accuracy(Metric):
     """Class for the calculation of accuracy"""
-    def evaluate(self, predicted_truth, actual_truth) -> float:
+    def evaluate(self, predicted_truth: np.ndarray,
+                 actual_truth: np.ndarray) -> float:
         """
         The metric function to calculate the accuracy.
 
@@ -75,12 +95,13 @@ class Accuracy(Metric):
             The percentage of matching predicted and actual truths
         """
         total_result = np.sum((predicted_truth == actual_truth).astype(int))
-        return 1/len(actual_truth) * total_result
+        return 1 / len(actual_truth) * total_result
 
 
 class MeanSquaredError(Metric):
     """Class for the calculation of the mean squared error"""
-    def evaluate(self, predicted_truth, actual_truth) -> float:
+    def evaluate(self, predicted_truth: np.ndarray,
+                 actual_truth: np.ndarray) -> float:
         """
         The metric function to calculate the mean squared error.
 
@@ -93,7 +114,7 @@ class MeanSquaredError(Metric):
             predicted and actual truths
         """
         total_result = np.sum((predicted_truth - actual_truth) ** 2)
-        return 1/len(actual_truth) * total_result
+        return 1 / len(actual_truth) * total_result
 
 
 class LogLoss(Metric):
@@ -110,7 +131,7 @@ class LogLoss(Metric):
         """
         multiplied_arrays = np.multiply(predicted_truths, actual_truths)
         filtered_array = multiplied_arrays[multiplied_arrays != 0]
-        log_list = -np.log(filtered_array)
+        log_list = - np.log(filtered_array)
         return 1/len(log_list) * np.sum(log_list)
 
 
@@ -128,8 +149,8 @@ class MeanAbsolutePercentageError(Metric):
             The average degree to which the predicted value differs from the
             actual value expressed in percentages
         """
-        sum_part = np.sum(abs(actual_truths - predicted_truths)
-                          / actual_truths)
+        sum_part = (np.sum(abs(actual_truths - predicted_truths)
+                    / actual_truths))
         return sum_part / len(predicted_truths)
 
 
@@ -150,7 +171,7 @@ class CohensKappa(Metric):
             The closer to 1, the better.
         """
         # Convert one-hot encoded arrays to single labels
-        print(actual_truth)
+        # print(actual_truth)
         if predicted_truth.ndim > 1:  # Check if prediction is one-hot encoded
             predicted_truth = np.argmax(predicted_truth,
                                         axis=1)  # Flatten to single labels
@@ -177,12 +198,12 @@ class CohensKappa(Metric):
         row_sum = np.sum(confusion_matrix, axis=1)
         column_sum = np.sum(confusion_matrix, axis=0)
         expected_agreement = np.sum((row_sum * column_sum) / num_samples**2)
-        print(observed_agreement, expected_agreement)
+        # print(observed_agreement, expected_agreement)
 
         return (
-            (observed_agreement - expected_agreement) /
-            (1 - expected_agreement)
-            )
+            (observed_agreement - expected_agreement)
+            / (1 - expected_agreement)
+                )
 
 
 class RSquaredScore(Metric):

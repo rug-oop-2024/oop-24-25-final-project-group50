@@ -88,5 +88,13 @@ class Model(ABC, BaseModel):
         pass
 
     def to_artifact(self, name: str) -> Artifact:
-        print(self._parameters)
-        return Artifact(name=name, type="model", data=pickle.dumps(self._parameters))
+        """
+        Converts the model instance to an artifact instance.
+
+        Args:
+            name: the name which is to be given to the artifact instance
+        Returns:
+            An Artifact instance
+        """
+        return Artifact(name=name, type="model",
+                        data=pickle.dumps(self._parameters))

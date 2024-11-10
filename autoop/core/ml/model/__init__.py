@@ -25,7 +25,6 @@ CLASSIFICATION_MODELS = [
 
 
 def get_model(model_name: str) -> Model:
-    print(model_name)
     """Factory function to get a model by name."""
     match model_name:
         case "Multiple Linear Regression":
