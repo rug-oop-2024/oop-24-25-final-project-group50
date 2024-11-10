@@ -10,6 +10,18 @@ METRICS = [
     "Precision"
 ]
 
+REGRESSION_METRICS = [
+    "Mean Squared Error",
+    "Mean Absolute Percentage Error",
+    "R-squared score",
+]
+
+CLASSIFICATION_METRICS = [
+    "Accuracy",
+    "Cohens Kappa",
+    "Precision",
+]
+
 
 def get_metric(name: str) -> "Metric":
     """

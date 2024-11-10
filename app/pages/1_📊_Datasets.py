@@ -5,11 +5,13 @@ import time
 from app.core.system import AutoMLSystem
 from autoop.core.ml.dataset import Dataset
 
+# ###PAGE SETUP###
 
 st.set_page_config(page_title="Datasets", page_icon="📊")
 
-
 automl = AutoMLSystem.get_instance()
+
+# ###DATASET UPLOADING###
 
 st.header("Upload & Save datasets")
 
@@ -24,7 +26,7 @@ if uploaded_datasets:
                 as_dataset = Dataset.from_dataframe(in_dataframe,
                                                     name=item.name,
                                                     asset_path="./assets")
-                as_dataset.asset_path = f"./{as_dataset.id}"
+                as_dataset._asset_path = f"./{as_dataset.id}"
                 automl._registry.register(as_dataset)
                 st.success("File saved")
                 st.write(in_dataframe)
@@ -32,13 +34,17 @@ if uploaded_datasets:
                 st.warning(f"File {item.name} is not a CSV \
                            file and was not saved")
 
+# ###DATASET DISPLAY & DELETING###
+
 datasets = automl.registry.list(type="dataset")
+datasets_names = [dataset.name for dataset in datasets]
 if datasets != []:
 
-    st.header("Delete datasets")
+    st.header("Saved datasets")
+    for dataset in datasets:
+        st.text(f"- {dataset.name}")
 
-    datasets_names = [dataset.name for dataset in datasets]
-    chosen_dataset = st.markdown(datasets_names)
+    st.header("Delete datasets")
     delete_file = st.selectbox('Which file do you want to delete?',
                                datasets_names, index=0)
     delete_dataset = datasets[datasets_names.index(delete_file)]
